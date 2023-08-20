@@ -122,9 +122,6 @@ namespace zae
 			glyphs[id].width = F26DOT6_TO_DOUBLE(face->glyph->metrics.width);
 			glyphs[id].height = F26DOT6_TO_DOUBLE(face->glyph->metrics.height);
 			glyphs[id].layer = id;
-			//glyphs[id].pxRange = 2;
-
-			Log::Info((char)c, " - w: ", glyphs[id].width, " - h: ", glyphs[id].height, " - bearingX: ", glyphs[id].bearingX,  '\n');
 
 			if (success)
 			{

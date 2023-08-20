@@ -35,6 +35,9 @@ namespace zae
 		const Image2dArray* GetImage() const { return image.get(); }
 		bool IsOpen() const noexcept { return library != nullptr; }
 
+		template <typename T>
+		T GetSize() const { return static_cast<T>(size); }
+
 	private:
 		void Open();
 		void Close();

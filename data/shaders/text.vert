@@ -7,6 +7,7 @@ layout(binding = 0) uniform UniformObject {
 	float alpha;
 
 	vec4 colour;
+	float scale;
 } object;
 
 layout(location = 0) in vec2 inPosition;
