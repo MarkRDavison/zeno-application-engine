@@ -54,6 +54,8 @@ namespace test
 	{
 		this->model = std::move(model);
 
+		const auto size = zae::Windows::Get()->GetWindow(0)->GetSize();
+
 		// Lets set up the camera viewpoint for now the models transform will be the Unit transform
 		ubo.view = zae::Matrix4();
 		ubo.proj = zae::Matrix4::OrthographicMatrix(-1.0f, +1.0f, -1.0f, +1.0f, 0.01f, 1000.0f);

@@ -1,5 +1,5 @@
-#include "EngineApp.hpp"
-#include "EngineRenderer.hpp"
+#include "TextApp.hpp"
+#include "TextRenderer.hpp"
 
 #include <zae/Engine/Files.hpp>
 #include <zae/Engine/Devices/Windows.hpp>
@@ -9,38 +9,31 @@
 namespace test
 {
 
-	EngineApp::EngineApp() : zae::App("Zeno Application Engine - Engine Example")
+	TextApp::TextApp() : zae::App("Zeno Application Engine - Text Example")
 	{
 
 	}
-	EngineApp::~EngineApp()
+	TextApp::~TextApp()
 	{
 		zae::Files::Get()->ClearSearchPath();
 	}
 
-	void EngineApp::Start() 
+	void TextApp::Start()
 	{
 		// TODO: Replace with initialize methods
 		zae::Windows::Get();
 		zae::Files::Get();
 		zae::Graphics::Get();
 		zae::Resources::Get();
-		// Windows
-		// Files
-		// Graphics
-		// Resources
-		// Inputs
-		// Scenes
-		// Timers
 
 		zae::Windows::Get()->AddWindow();
 
 		zae::Windows::Get()->GetWindow(0)->OnClose().registerCallback([]() { zae::Engine::Get()->RequestClose(); });
 		zae::Windows::Get()->GetWindow(0)->SetTitle(zae::App::GetName());
-		zae::Graphics::Get()->SetRenderer(std::make_unique<EngineRenderer>());
+		zae::Graphics::Get()->SetRenderer(std::make_unique<TextRenderer>());
 	}
 
-	void EngineApp::Update() 
+	void TextApp::Update()
 	{
 
 	}

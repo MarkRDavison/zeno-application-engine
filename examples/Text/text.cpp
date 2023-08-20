@@ -1,11 +1,11 @@
 #include <cstdlib>
 #include <zae/Engine/Engine.hpp>
-#include "EngineApp.hpp"
+#include "TextApp.hpp"
 
 int main(int _argc, char** _argv)
 {
 	auto engine = std::make_unique<zae::Engine>(_argv[0]);
-	engine->SetApp(std::make_unique<test::EngineApp>());
+	engine->SetApp(std::make_unique<test::TextApp>());
 
 	// Runs the game loop.
 	auto exitCode = engine->Run();
