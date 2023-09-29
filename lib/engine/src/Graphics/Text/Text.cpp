@@ -1,9 +1,16 @@
 #include <zae/Engine/Graphics/Text/Text.hpp>
 
 #include <zae/Engine/Devices/Windows.hpp>
+#include <zae/Core/Utils/String.hpp>
 
 namespace zae
 {
+
+	Text::Text() :
+		justify(Justify::Left)
+	{
+		maxSize = { std::numeric_limits<float>::max() , std::numeric_limits<float>::max() };
+	}
 
 	void Text::Update()
 	{
@@ -50,6 +57,19 @@ namespace zae
 		this->font = font;
 	}
 
+	void Text::SetMaxSize(const Vector2f& maxSize)
+	{
+		dirty |= this->maxSize == maxSize;
+		this->maxSize = maxSize;
+	}
+
+
+	void Text::SetJustify(Justify justify)
+	{
+		dirty |= this->justify == justify;
+		this->justify = justify;
+	}
+
 	void Text::LoadText()
 	{
 #ifdef ZAE_DEBUG
@@ -62,27 +82,14 @@ namespace zae
 			return;
 		}
 
-		std::vector<VertexText> vertices;
+		lastMaxSize = GetMaxSize();
 
-		Vector2f cursor = { 0.0f, 0.0f };
+		// Creates mesh data.
+		auto lines = CreateStructure();
 
-		// https://freetype.org/freetype2/docs/glyphs/glyphs-3.html
-		for (auto c : string)
-		{
-			auto glyph = font->GetGlyph(c);
+		auto numberLines = static_cast<uint32_t>(lines.size());
 
-			if (glyph.has_value())
-			{
-				AddVerticesForGlyph(cursor.x, cursor.y, font->GetSize<float>(), glyph.value(), vertices);
-
-				cursor.x += glyph.value().advance;
-			}
-			else
-			{
-
-				cursor.x += font->GetSize<float>();
-			}
-		}
+		auto vertices = CreateQuad(lines);
 
 		model = std::make_unique<Model>(vertices);
 		dirty = false;
@@ -92,8 +99,132 @@ namespace zae
 #endif
 	}
 
+	std::vector<Text::Line> Text::CreateStructure() const
+	{
+		auto maxLength = lastMaxSize.x;
 
-	void Text::AddVerticesForGlyph(float cursorX, float cursorY, float fontSize, const Font::Glyph& glyph, std::vector<VertexText>& vertices)
+		std::vector<Line> lines;
+		Line currentLine(font->GetSpaceWidth<float>(), maxLength);
+		Word currentWord;
+
+		auto formattedText = String::ReplaceAll(string, "\t", "	");
+		auto textLines = String::Split(formattedText, '\n');
+
+
+		for (uint32_t i = 0; i < textLines.size(); i++)
+		{
+			if (textLines.at(i).empty())
+			{
+				continue;
+			}
+
+			for (const auto& c : textLines.at(i))
+			{
+				auto ascii = static_cast<int32_t>(c);
+
+				if (ascii == ' ')
+				{
+					if (!currentLine.AddWord(currentWord))
+					{
+						lines.emplace_back(currentLine);
+						currentLine = { font->GetSpaceWidth<float>(),(float)maxLength };
+						currentLine.AddWord(currentWord);
+					}
+
+					currentWord = {};
+					continue;
+				}
+
+				if (auto character = font->GetGlyph(ascii))
+				{
+					currentWord.AddCharacter(*character, 0.0f/*kerning*/);
+				}
+			}
+
+			if (i != textLines.size() - 1)
+			{
+				auto wordAdded = currentLine.AddWord(currentWord);
+				lines.emplace_back(currentLine);
+				currentLine = { font->GetSpaceWidth<float>(), (float)maxLength };
+
+				if (!wordAdded)
+				{
+					currentLine.AddWord(currentWord);
+				}
+
+				currentWord = {};
+			}
+		}
+
+		CompleteStructure(lines, currentLine, currentWord, maxLength);
+
+		return lines;
+	}
+	void Text::CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, float maxLength) const
+	{
+		auto added = currentLine.AddWord(currentWord);
+
+		if (!added)
+		{
+			lines.emplace_back(currentLine);
+			currentLine = { font->GetSpaceWidth<float>(), maxLength };
+			currentLine.AddWord(currentWord);
+		}
+
+		lines.emplace_back(currentLine);
+	}
+	std::vector<VertexText> Text::CreateQuad(const std::vector<Line>& lines) const
+	{
+		std::vector<VertexText> vertices;
+
+		float cursorX = 0.0f;
+		float cursorY = 0.0f;
+		auto lineOrder = static_cast<int32_t>(lines.size());
+
+		for (const auto& line : lines)
+		{
+			switch (justify)
+			{
+			case Justify::Left:
+				cursorX = 0.0f;
+				break;
+			case Justify::Centre:
+				cursorX = (line.maxLength - line.currentLineLength) / 2.0f;
+				break;
+			case Justify::Right:
+				cursorX = line.maxLength - line.currentLineLength;
+				break;
+			case Justify::Fully:
+				cursorX = 0.0f;
+				break;
+			}
+
+			for (const auto& word : line.words)
+			{
+				for (const auto& letter : word.glyphs)
+				{
+					AddVerticesForGlyph(cursorX, cursorY, font->GetSize<float>(), letter, vertices);
+					cursorX += 0.0f /* kerning */ + letter.advance;
+				}
+
+				if (justify == Justify::Fully && lineOrder > 1)
+				{
+					cursorX += (line.maxLength - line.currentWordsLength) / line.words.size();
+				}
+				else
+				{
+					cursorX += font->GetSpaceWidth<float>();
+				}
+			}
+
+			cursorY += 0.0f /* leading */ + font->GetSize<float>() * 1.25f;// TODO: better value here
+			lineOrder--;
+		}
+
+		return vertices;
+	}
+
+	void Text::AddVerticesForGlyph(float cursorX, float cursorY, float fontSize, const Font::Glyph& glyph, std::vector<VertexText>& vertices) const
 	{
 		const float fontGenerationSize = font->GetSize<float>();
 		const float offset = fontGenerationSize / 16.0f;
@@ -104,15 +235,26 @@ namespace zae
 
 		const float texPixelHeight = fontGenerationSize;
 		const float texPixelSize = fontGenerationSize;
-		const float pixelHeight = glyph.height;
-		const float pixelWidth = glyph.width;
+		const float pixelHeight = glyph.height; // TODO: Width & height of characters that are wider than tall e.g. 'w'/'W'
+		const float pixelWidth = glyph.width;   // TODO: Width & height of characters that are wider than tall e.g. 'w'/'W'
 
 		const float aspectRatio = pixelWidth / pixelHeight;
-		const float heightRatio = texPixelHeight / pixelHeight;
-		const float heightRatioR = pixelHeight/ texPixelHeight;
+
+		float heightRatio = 1.0f;
+		float widthRatio = 1.0f;
+		if (pixelHeight > pixelWidth)
+		{
+			heightRatio = texPixelHeight / pixelHeight;
+		}
+		else if (pixelHeight < pixelWidth)
+		{
+			widthRatio = texPixelHeight / pixelWidth;
+		}
 
 		const auto pixelInTextureWidth = pixelWidth * heightRatio + offset;
+		const auto pixelInTextureHeight= pixelHeight * widthRatio + offset; // Offset?
 
+		// TODO: Width & height of characters that are wider than tall e.g. 'w'/'W' probably actually need to fix here, take a horizontal slice
 		auto textureX = 0.5f - ((pixelInTextureWidth) / 2.0f) / texPixelSize;
 		auto textureY = 0.0f;
 		auto textureMaxX = 0.5f + ((pixelInTextureWidth) / 2.0f) / texPixelSize;
@@ -126,7 +268,7 @@ namespace zae
 		AddVertex(vertexMaxX, vertexY, textureMaxX, textureMaxY, glyph.layer, vertices);
 	}
 
-	void Text::AddVertex(float vx, float vy, float tx, float ty, float layer, std::vector<VertexText>& vertices)
+	void Text::AddVertex(float vx, float vy, float tx, float ty, float layer, std::vector<VertexText>& vertices) const
 	{
 		vertices.emplace_back(VertexText({ vx, vy }, { tx, ty, layer }));
 	}

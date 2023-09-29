@@ -29,8 +29,10 @@ namespace test
 		font = std::make_shared<zae::Font>("fonts/Arial.ttf");
 
 		auto& t1 = text.emplace_back(std::make_unique<zae::Text>());
+		t1->SetMaxSize({ 800.0f, 400.0f });
 		t1->SetFont(font);
-		t1->SetString("Abstract.jpqlLJAV");
+		t1->SetString("Abstract.jpqlLJAV\nhello world!\nhuh? Why?");
+		t1->SetJustify(zae::Text::Justify::Centre);
 
 		textSubrender->AddText(std::move(t1));
 	}

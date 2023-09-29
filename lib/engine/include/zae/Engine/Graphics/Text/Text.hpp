@@ -57,6 +57,8 @@ namespace zae
 			Left, Centre, Right, Fully
 		};
 
+		Text();
+
 		bool CmdRender(const CommandBuffer& commandBuffer, const PipelineGraphics& pipeline);
 
 		void Update();
@@ -64,22 +66,79 @@ namespace zae
 		void SetString(const std::string& string);
 		const Model* GetModel() const { return model.get(); }
 
-		const std::shared_ptr<Font>& GetFont() const { return font; }
 		void SetFont(const std::shared_ptr<Font>& font);
+		const std::shared_ptr<Font>& GetFont() const { return font; }
+
+		void SetMaxSize(const Vector2f& maxSize);
+		const Vector2f& GetMaxSize() const { return maxSize; }
+
+		void SetJustify(Justify justify);
+		Justify GetJustify() const { return justify; }
 
 		const Matrix4& GetModelView() const { return modelView; }
 
 	private:
+		class Word
+		{
+		public:
+			Word() = default;
+
+			void AddCharacter(const Font::Glyph& glyph, float kerning)
+			{
+				glyphs.emplace_back(glyph);
+				width += kerning + glyph.advance;
+			}
+
+			std::vector<Font::Glyph> glyphs;
+			float width = 0.0f;
+		};
+
+		class Line
+		{
+		public:
+			Line(float spaceWidth, float maxLength) :
+				maxLength(maxLength),
+				spaceSize(spaceWidth)
+			{
+			}
+
+			bool AddWord(const Word& word)
+			{
+				auto additionalLength = word.width;
+				additionalLength += !words.empty() ? spaceSize : 0.0f;
+
+				if (currentLineLength + additionalLength <= maxLength)
+				{
+					words.emplace_back(word);
+					currentWordsLength += word.width;
+					currentLineLength += additionalLength;
+					return true;
+				}
+
+				return false;
+			}
+
+			float maxLength;
+			float spaceSize;
+
+			std::vector<Word> words;
+			float currentWordsLength = 0.0f;
+			float currentLineLength = 0.0f;
+		};
+
+	private:
 		void LoadText();
-
-
-		void AddVerticesForGlyph(float cursorX, float cursorY, float fontSize, const Font::Glyph& glyph, std::vector<VertexText>& vertices);
-
-		void AddVertex(float vx, float vy, float tx, float ty, float layer, std::vector<VertexText>& vertices);
+		std::vector<Line> CreateStructure() const;
+		void CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, float maxLength) const;
+		std::vector<VertexText> CreateQuad(const std::vector<Line>& lines) const;
+		void AddVerticesForGlyph(float cursorX, float cursorY, float fontSize, const Font::Glyph& glyph, std::vector<VertexText>& vertices) const;
+		void AddVertex(float vx, float vy, float tx, float ty, float layer, std::vector<VertexText>& vertices) const;
 
 	private:
 		bool dirty = true;
 		std::string string;
+
+		Justify justify;
 
 		Matrix4 modelView;
 
@@ -88,6 +147,9 @@ namespace zae
 
 		std::unique_ptr<Model> model;
 		std::shared_ptr<Font> font;
+
+		Vector2f maxSize;
+		Vector2f lastMaxSize;
 	};
 
 }
