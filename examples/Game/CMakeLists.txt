@@ -8,7 +8,8 @@ SET(CPP_FILES
     "game.cpp"
 	"GameApp.cpp"
 	"GameRenderer.cpp"
-	"Subrenders/ModelSubrender.cpp"
+	"Scenes/Game3DScene.cpp"
+	"Subrenders/Game3DSceneSubrender.cpp"
 )
 
 exampleApplication("ZaeGameExample" "${CPP_FILES}" "${MODULE_LIBS}")

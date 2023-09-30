@@ -1,6 +1,6 @@
 #include "GameRenderer.hpp"
 
-#include "Subrenders/ModelSubrender.hpp"
+//#include "Subrenders/ModelSubrender.hpp"
 
 #include <zae/Engine/Graphics/Pipelines/Pipeline.hpp>
 #include <zae/Engine/Graphics/Pipelines/PipelineGraphics.hpp>
@@ -30,30 +30,30 @@ void GameRenderer::Start()
 {
 
 	// Lets create a set of vertices and matching colors, a square this time.
-	const std::vector<TestModelVertex> vertices = {
-		{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+	//const std::vector<TestModelVertex> vertices = {
+	//	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	//	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+	//	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	//	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
-		{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-	};
+	//	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	//	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+	//	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	//	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+	//};
 
-	// Create a set of indices.
-	const std::vector<uint32_t> indices = {
-		0, 1, 2, 2, 3, 0,
-		4, 5, 6, 6, 7, 4
-	};
+	//// Create a set of indices.
+	//const std::vector<uint32_t> indices = {
+	//	0, 1, 2, 2, 3, 0,
+	//	4, 5, 6, 6, 7, 4
+	//};
 
 	// Create a model from that set of Vertices and indices.
-	auto model = std::make_unique<zae::Model>(vertices, indices);
-
-	auto modelScene = AddSubrender<ModelSubrender>({ 0, 0 });
-
-	modelScene->Init(std::move(model));
+	//auto model = std::make_unique<zae::Model>(vertices, indices);
+	//
+	//auto modelScene = AddSubrender<ModelSubrender>({ 0, 0 });
+	//
+	//modelScene->Init(std::move(model));
 
 	/*const std::vector<TestModelVertex> uiVertices = {
 		{ { -1.0f, +0.0f, +0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } },

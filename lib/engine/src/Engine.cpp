@@ -4,6 +4,7 @@
 #include <zae/Engine/Devices/Windows.hpp>
 #include <zae/Engine/Resources/Resources.hpp>
 #include <zae/Engine/Files.hpp>
+#include <zae/Engine/Scene/Scenes.hpp>
 
 #include <exception>
 
@@ -70,7 +71,7 @@ namespace zae
 				//Inputs::Get()->Update();
 
 				// Normal
-				//Scenes::Get()->Update();
+				Scenes::Get()->Update(deltaUpdate.lastFrameTime.AsSeconds());
 
 				// Post
 				Files::Get()->Update();
