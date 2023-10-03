@@ -16,4 +16,5 @@ namespace zae
 	constexpr std::string_view ZAE_COMPILED_BRANCH = "master";
 
 	constexpr std::string_view ZAE_RESOURCES_DEV = "F:/Workspace/Git/zeno-application-engine/data";
+	constexpr std::string_view ZAE_RESOURCES_DEV_LAPTOP = "C:/Workspace/Git/zeno-application-engine/data";
 }

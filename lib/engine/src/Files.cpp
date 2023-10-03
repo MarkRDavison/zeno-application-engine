@@ -18,6 +18,10 @@ namespace zae
 		{
 			AddSearchPath(std::string(ZAE_RESOURCES_DEV));
 		}
+		if (std::filesystem::exists(ZAE_RESOURCES_DEV_LAPTOP))
+		{
+			AddSearchPath(std::string(ZAE_RESOURCES_DEV_LAPTOP));
+		}
 	}
 
 	Files::~Files()
