@@ -49,6 +49,7 @@ namespace zae
 
 		uniformScene.Push("view", ubo.view);
 		uniformScene.Push("proj", ubo.proj);
+		descriptorSet.Push("UniformBufferObject", uniformScene);
 
 		for (auto& e : entities)
 		{
@@ -62,7 +63,6 @@ namespace zae
 			pushHandler.Push("model", ubo.model);
 
 			descriptorSet.Push("PushConstantObject", pushHandler);
-			descriptorSet.Push("UniformBufferObject", uniformScene);
 
 			auto texture = Resources::Get()->Find<Image2d>(ResourceNode(graphic->GetTexture()));
 			descriptorSet.Push("texSampler", texture);
@@ -87,8 +87,8 @@ namespace zae
 
 		model = std::make_unique<Model>(vertices, indices);
 
-		auto scene = Scenes::Get()->GetScene();
-		if (scene != nullptr)
+		
+		if (auto scene = Scenes::Get()->GetScene(); scene != nullptr)
 		{
 			const auto& camera = scene->GetCamera();
 			ubo.view = camera->GetViewMatrix();
