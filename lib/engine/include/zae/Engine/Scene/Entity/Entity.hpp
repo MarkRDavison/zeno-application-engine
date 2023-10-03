@@ -62,7 +62,8 @@ namespace zae
 		template<typename T>
 		bool HasComponent(bool allowDisabled = false) const
 		{
-			return GetComponent<T>(allowDisabled) != nullptr;
+			const auto c =  GetComponent<T>(allowDisabled);
+			return c != nullptr && (allowDisabled || c->IsEnabled());
 		}
 
 		template<typename T>

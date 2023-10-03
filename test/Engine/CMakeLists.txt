@@ -3,4 +3,4 @@ SET(MODULE_LIBS
 	"zae-engine${LIB_EXTENSION_SHARED}"
 )
 
-exampleTestApplication("EngineTest" "EngineTest.cpp" "${MODULE_LIBS}")
+exampleTestApplication("ZaeEngineTest" "EngineTest.cpp" "${MODULE_LIBS}")
