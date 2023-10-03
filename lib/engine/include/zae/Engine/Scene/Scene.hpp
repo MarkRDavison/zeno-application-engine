@@ -10,7 +10,7 @@ namespace zae
 	class Scene
 	{
 	public:
-		Scene(Camera* camera) : baseCamera(camera)
+		Scene(Camera* camera) : camera(camera)
 		{
 
 		}
@@ -30,7 +30,7 @@ namespace zae
 
 			Update(delta);
 
-			baseCamera->Update(delta);
+			camera->Update(delta);
 		}
 
 		bool IsActive() const { return this->active; }
@@ -38,12 +38,13 @@ namespace zae
 
 		std::vector<Entity*> QueryAll() { return entities.QueryAll(); }
 
+		const Camera* GetCamera() const { return camera; }
+
 	protected:
 		virtual void Update(float delta) = 0;
 		virtual void Start() {}
 
 	protected:
-		Camera* baseCamera;
 		bool started{ false };
 		bool active{ true };
 

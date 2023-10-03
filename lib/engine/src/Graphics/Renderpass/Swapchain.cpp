@@ -19,10 +19,10 @@ namespace zae
 		compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR),
 		activeImageIndex(std::numeric_limits<uint32_t>::max())
 	{
-		auto surfaceFormat = surface.GetFormat();
-		auto surfaceCapabilities = surface.GetCapabilities();
-		auto graphicsFamily = logicalDevice.GetGraphicsFamily();
-		auto presentFamily = logicalDevice.GetPresentFamily();
+		const auto& surfaceFormat = surface.GetFormat();
+		const auto& surfaceCapabilities = surface.GetCapabilities();
+		const auto& graphicsFamily = logicalDevice.GetGraphicsFamily();
+		const auto& presentFamily = logicalDevice.GetPresentFamily();
 
 		uint32_t physicalPresentModeCount;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &physicalPresentModeCount, nullptr);

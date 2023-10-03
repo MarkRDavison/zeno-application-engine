@@ -14,7 +14,7 @@ namespace zae
 		Subrender(stage),
 		pipeline(
 			stage,
-			{ "shaders/testmodel.vert", "shaders/testmodel.frag" },
+			{ "shaders/defaultScene.vert", "shaders/defaultScene.frag" },
 			{ GraphicModelVertex::GetVertexInput() },
 			{  },
 			PipelineGraphics::Mode::Polygon,
@@ -59,7 +59,9 @@ namespace zae
 
 			ubo.model = transform->GetWorldMatrix();
 
-			uniformScene.Push("model", ubo.model);
+			pushHandler.Push("model", ubo.model);
+
+			descriptorSet.Push("PushConstantObject", pushHandler);
 			descriptorSet.Push("UniformBufferObject", uniformScene);
 
 			auto texture = Resources::Get()->Find<Image2d>(ResourceNode(graphic->GetTexture()));
@@ -67,7 +69,7 @@ namespace zae
 
 			descriptorSet.Update(pipeline);
 			descriptorSet.BindDescriptor(commandBuffer, pipeline);
-
+			pushHandler.BindPush(commandBuffer, pipeline);
 			model->CmdRender(commandBuffer);
 		}
 	}
@@ -85,9 +87,14 @@ namespace zae
 
 		model = std::make_unique<Model>(vertices, indices);
 
-		// Lets set up the camera viewpoint for now the models transform will be the Unit transform
-		ubo.view = zae::Matrix4::LookAt(zae::Vector3f(2.0f, 2.0f, 2.0f), zae::Vector3f(0.0f, 0.0f, 0.0f), zae::Vector3f(0.0f, 0.0f, 1.0f));
-		ubo.proj = zae::Matrix4::PerspectiveMatrix(zae::Math::Radians(45.0f), zae::Windows::Get()->GetWindow(0)->GetAspectRatio(), 0.1f, 10.0f);
+		auto scene = Scenes::Get()->GetScene();
+		if (scene != nullptr)
+		{
+			const auto& camera = scene->GetCamera();
+			ubo.view = camera->GetViewMatrix();
+			ubo.proj = camera->GetProjectionMatrix();
+		}
+		
 		ubo.proj[1][1] *= -1;
 		ubo.model = zae::Matrix4();
 	}

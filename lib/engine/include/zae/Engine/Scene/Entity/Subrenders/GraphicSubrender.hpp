@@ -26,6 +26,7 @@ namespace zae
 		DescriptorsHandler descriptorSet;
 
 		UniformHandler uniformScene;
+		PushHandler pushHandler;
 
 		struct UniformBufferObject
 		{
