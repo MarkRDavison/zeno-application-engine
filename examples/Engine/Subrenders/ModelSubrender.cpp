@@ -67,6 +67,6 @@ namespace test
 		ubo.model = zae::Matrix4();
 
 		// Lets create an image to be the texture of the object, we will load from the resources system.
-		image = std::make_unique<zae::Image2d>("textures/texture.jpg");
+		image = zae::Image2d::Create("textures/texture.jpg");
 	}
 }

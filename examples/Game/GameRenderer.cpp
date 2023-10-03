@@ -4,6 +4,8 @@
 
 #include <zae/Engine/Graphics/Pipelines/Pipeline.hpp>
 #include <zae/Engine/Graphics/Pipelines/PipelineGraphics.hpp>
+#include <zae/Engine/Scene/Entity/Subrenders/GraphicSubrender.hpp>
+#include <zae/Engine/Resources/Resources.hpp>
 
 GameRenderer::GameRenderer()
 {
@@ -68,6 +70,11 @@ void GameRenderer::Start()
 	auto uiScene = AddSubrender<UiSubrender>({ 0, 0 });
 
 	uiScene->Init(std::move(uiModel));*/
+
+	zae::Resources::Get()->Add(zae::ResourceNode("TEST_TEXTURE", "textures/texture.jpg"), zae::Image2d::Create("textures/texture.jpg"));
+
+	auto subrender = AddSubrender<zae::GraphicSubrender>({ 0,0 });
+	subrender->Init();
 }
 
 void GameRenderer::Update()

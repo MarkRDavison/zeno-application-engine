@@ -21,12 +21,13 @@ namespace zae
 			return Instance;
 		}
 
-		void AddScene(Scene* scene);
+		void SetScene(Scene* scene);
+		Scene* GetScene();
 		void Update(float delta);
 
 	private:
 		static Scenes* Instance;
-		std::vector<Scene*> scenes;
+		Scene* scene{ nullptr };
 	};
 
 }

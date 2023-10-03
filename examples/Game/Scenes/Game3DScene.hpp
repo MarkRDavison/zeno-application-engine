@@ -1,11 +1,11 @@
 #pragma once
 
-#include <zae/Game/Scene/Scene3D.hpp>
+#include <zae/Engine/Scene/Scene.hpp>
 
-class Game3DScene : public zae::Scene3D
+class Game3DScene : public zae::Scene
 {
 public:
-	Game3DScene(zae::Camera3D* camera);
+	Game3DScene(zae::Camera* camera);
 
 protected:
 	void Start() override;

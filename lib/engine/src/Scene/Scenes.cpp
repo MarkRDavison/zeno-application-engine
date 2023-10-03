@@ -5,13 +5,19 @@ namespace zae
 
 	Scenes* Scenes::Instance = nullptr;
 
-	void Scenes::AddScene(Scene* scene)
+	void Scenes::SetScene(Scene* scene)
 	{
-		scenes.push_back(scene);
+		this->scene = scene;
 	}
+
+	Scene* Scenes::GetScene()
+	{
+		return scene;
+	}
+
 	void Scenes::Update(float delta)
 	{
-		for (auto& scene : scenes)
+		if (scene != nullptr)
 		{
 			scene->UpdateScene(delta);
 		}

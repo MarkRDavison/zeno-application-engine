@@ -17,6 +17,7 @@ namespace zae
 
 		const Matrix4& GetProjectionMatrix() const { return projectionMatrix; }
 
+	protected:
 		Matrix4 viewMatrix;
 		Matrix4 projectionMatrix;
 	};

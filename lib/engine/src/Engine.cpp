@@ -71,7 +71,7 @@ namespace zae
 				//Inputs::Get()->Update();
 
 				// Normal
-				Scenes::Get()->Update(deltaUpdate.lastFrameTime.AsSeconds());
+				Scenes::Get()->Update(deltaUpdate.change.AsSeconds());
 
 				// Post
 				Files::Get()->Update();

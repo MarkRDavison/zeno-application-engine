@@ -6,8 +6,9 @@
 #include <zae/Engine/Devices/Windows.hpp>
 #include <zae/Engine/Graphics/Graphics.hpp>
 #include <zae/Engine/Resources/Resources.hpp>
-#include <zae/Game/InputActionManager.hpp>
 #include <zae/Engine/Scene/Scenes.hpp>
+#include <zae/Game/InputActionManager.hpp>
+#include <zae/Game/Camera3DOrthographic.hpp>
 
 GameApp::GameApp() : zae::App("Zeno Application Engine - Game Example")
 {
@@ -59,7 +60,7 @@ void GameApp::Start()
 		iam->RegisterInputActionType(action);
 	}
 
-	zae::Scenes::Get()->AddScene(new Game3DScene(new zae::Camera3D()));
+	zae::Scenes::Get()->SetScene(new Game3DScene(new zae::Camera3DOrthographic()));
 }
 
 void GameApp::Update()

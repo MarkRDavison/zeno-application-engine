@@ -15,10 +15,16 @@ namespace zae
 		{
 
 		}
+		ResourceNode(std::string name) :
+			name(std::move(name)),
+			filename("")
+		{
+
+		}
 
 		bool operator==(const ResourceNode& other) const
 		{
-			return this->name == other.name && this->filename == other.name;
+			return this->name == other.name;
 		}
 		bool operator<(const ResourceNode& other) const
 		{

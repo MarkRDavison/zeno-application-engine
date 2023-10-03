@@ -37,7 +37,7 @@ namespace test
 
 		zae::UniformHandler uniformScene;
 
-		std::unique_ptr<zae::Image2d> image;
+		std::shared_ptr<zae::Image2d> image;
 		std::unique_ptr<zae::Model> model;
 	};
 

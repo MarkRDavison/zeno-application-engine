@@ -136,7 +136,7 @@ namespace zae
 	Window::Window(std::size_t id) :
 		id(id),
 		size(1080, 720),
-		title("Zap Window"),
+		title("Zae Window"),
 		resizable(true),
 		focused(true)
 	{

@@ -53,6 +53,18 @@ namespace zae
 			return alternative;
 		}
 
+		template<typename... Args>
+		bool HasComponents(bool allowDisabled = false) const
+		{
+			return (HasComponent<Args>(allowDisabled) && ...);
+		}
+
+		template<typename T>
+		bool HasComponent(bool allowDisabled = false) const
+		{
+			return GetComponent<T>(allowDisabled) != nullptr;
+		}
+
 		template<typename T>
 		std::vector<T*> GetComponents(bool allowDisabled = false) const
 		{
@@ -86,17 +98,21 @@ namespace zae
 		template<typename T>
 		void RemoveComponent()
 		{
-			for (auto it = components.begin(); it != components.end(); ++it)
+			for (int i = 0; i < (int)components.size(); ++i)
 			{
-				auto casted = dynamic_cast<T*>((*it).get());
+				auto casted = dynamic_cast<T*>(components[i].get());
 
 				if (casted)
 				{
-					(*it)->SetEntity(nullptr);
-					components.erase(it);
+					components[i]->SetEntity(nullptr);
+					components.erase(components.begin() + i);
+					i--;
 				}
 			}
 		}
+
+
+
 	private:
 		std::string name;
 		bool removed = false;
