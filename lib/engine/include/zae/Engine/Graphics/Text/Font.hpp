@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zae/Engine/Resources/Resource.hpp>
-#include <zae/Engine/Graphics/Images/Image2dArray.hpp>
+#include <zae/Engine/Graphics/Images/Image2d.hpp>
 #include <zae/Engine/Graphics/Pipelines/PipelineGraphics.hpp>
 
 typedef struct FT_LibraryRec_* FT_Library;
@@ -16,12 +16,13 @@ namespace zae
 		class Glyph
 		{
 		public:
-			float layer;
-			float bearingX;
-			float bearingY;
-			float width;
-			float height;
-			float advance;
+			int sizeX;
+			int sizeY;
+			int bearingX;
+			int bearingY;
+			int advance;
+			int textureX;
+			int textureY;
 		};
 
 		explicit Font(std::filesystem::path filename, std::size_t size = 64, bool load = true);
@@ -32,7 +33,7 @@ namespace zae
 		std::type_index GetTypeIndex() const override { return typeid(Font); }
 
 		const std::filesystem::path& GetFilename() const { return filename; }
-		const Image2dArray* GetImage() const { return image.get(); }
+		const Image2d* GetImage() const { return image.get(); }
 		bool IsOpen() const noexcept { return library != nullptr; }
 
 		template <typename T>
@@ -50,7 +51,7 @@ namespace zae
 		FT_Face face = nullptr;
 
 		std::filesystem::path filename;
-		std::unique_ptr<Image2dArray> image;
+		std::unique_ptr<Image2d> image;
 
 		/// Char to glyphs index.
 		std::map<wchar_t, std::size_t> indices;

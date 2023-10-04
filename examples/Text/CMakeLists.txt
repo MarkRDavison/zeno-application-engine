@@ -7,6 +7,7 @@ SET(CPP_FILES
     "text.cpp"
 	"TextApp.cpp"
 	"TextRenderer.cpp"
+	"Subrenders/TextSubrender.cpp"
 )
 
 exampleApplication("ZaeTextExample" "${CPP_FILES}" "${MODULE_LIBS}")

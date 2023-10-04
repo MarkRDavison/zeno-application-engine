@@ -5,7 +5,7 @@
 int main(int _argc, char** _argv)
 {
 	auto engine = std::make_unique<zae::Engine>(_argv[0]);
-	engine->SetApp(std::make_unique<test::TextApp>());
+	engine->SetApp(std::make_unique<TextApp>());
 
 	// Runs the game loop.
 	auto exitCode = engine->Run();

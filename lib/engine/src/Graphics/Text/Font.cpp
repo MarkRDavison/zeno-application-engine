@@ -1,6 +1,5 @@
 #include <zae/Engine/Graphics/Text/Font.hpp>
 
-#include <zae/Engine/Graphics/Text/tiny_msdf.hpp>
 #define FT_CONFIG_OPTION_ERROR_STRINGS
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -55,7 +54,6 @@ namespace zae
 		}
 
 		auto path = Files::GetQualifiedPath(filename);
-		auto fileLoaded = Files::ReadBytes(filename);
 
 		if (!path.has_value())
 		{
@@ -99,38 +97,80 @@ namespace zae
 
 		Open();
 
-		auto layerCount = CHARACTERS.size();
+		auto bitmapSize = Vector2ui(1024);
+		auto bitmap = std::make_unique<Bitmap>(bitmapSize);
 
-		image = std::make_unique<Image2dArray>(Vector2ui(size, size), (uint32_t)layerCount, VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		auto& bitmapData = bitmap->GetData();
 
-		tinymsdf::Bitmap<float, 4> mtsdf(size, size);
-		glyphs.resize(layerCount);
-
-		for (auto c : CHARACTERS)
+		for (auto y = 0; y < bitmapSize.y; ++y)
 		{
-			bool success = !tinymsdf::GenerateMTSDF(mtsdf, face, c);
-
-			const FT_UInt glyphIndex = FT_Get_Char_Index(face, c);
-			const FT_Error loadGlyphError = FT_Load_Glyph(face, glyphIndex, FT_LOAD_RENDER);
-
-			auto id = indices.size();
-			indices[c] = id;
-
-			glyphs[id].advance = F26DOT6_TO_DOUBLE(face->glyph->metrics.horiAdvance);
-			glyphs[id].bearingX = F26DOT6_TO_DOUBLE(face->glyph->metrics.horiBearingX);
-			glyphs[id].bearingY = F26DOT6_TO_DOUBLE(face->glyph->metrics.horiBearingY);
-			glyphs[id].width = F26DOT6_TO_DOUBLE(face->glyph->metrics.width);
-			glyphs[id].height = F26DOT6_TO_DOUBLE(face->glyph->metrics.height);
-			glyphs[id].layer = id;
-
-			if (success)
+			for (auto x = 0; x < bitmapSize.x; ++x) 
 			{
-				image->SetPixels(mtsdf.pixels, id);
+				bitmapData[(y * bitmapSize.x + x) * 4 + 0] = 0;
+				bitmapData[(y * bitmapSize.x + x) * 4 + 1] = 0;
+				bitmapData[(y * bitmapSize.x + x) * 4 + 2] = 0;
+				bitmapData[(y * bitmapSize.x + x) * 4 + 3] = 255;
 			}
 		}
 
-		// TODO: Is this actually valid???
-		image->InstanceTransitionImageLayout(
+		const int MARGIN = 2;
+		Vector2i pen;
+		int currentMaxY = 0;
+
+		auto glyphSlot = face->glyph;
+
+		for (auto c : CHARACTERS)
+		{
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			{
+				// error message
+				continue;
+			}
+
+			const FT_Error loadCharError = FT_Render_Glyph(glyphSlot, FT_RENDER_MODE_SDF);
+			if (loadCharError != 0)
+			{
+				continue;
+			}
+
+			const auto nextX = pen.x + MARGIN + MARGIN + face->glyph->bitmap.width;
+			if (nextX >= bitmapSize.x)
+			{
+				pen.x = 0;
+				pen.y = currentMaxY;
+			}
+
+			glyphs.emplace_back(
+				Glyph{
+					.sizeX = (int)face->glyph->bitmap.width,
+					.sizeY = (int)face->glyph->bitmap.rows,
+					.bearingX = (int)face->glyph->bitmap_left,
+					.bearingY = (int)face->glyph->bitmap_top,
+					.advance = (int)face->glyph->advance.x,
+					.textureX = (int)pen.x,
+					.textureY = (int)pen.y
+				});
+
+			for (int texY = 0; texY < face->glyph->bitmap.rows; ++texY)
+			{
+				for (int texX = 0; texX < face->glyph->bitmap.width; ++texX)
+				{
+					Vector2i bitmapPosition = Vector2i(texX, texY) + pen + Vector2i(MARGIN);
+
+					bitmapData[(bitmapPosition.y * bitmapSize.x + bitmapPosition.x) * 4 + 0] = face->glyph->bitmap.buffer[texY * face->glyph->bitmap.width + texX];
+				}
+			}
+
+			pen.x += MARGIN + MARGIN + face->glyph->bitmap.width;
+
+			currentMaxY = std::max(currentMaxY, (int)(pen.y + MARGIN + MARGIN + face->glyph->bitmap.rows));
+
+		}
+
+		image = std::make_unique<Image2d>(std::move(bitmap));
+
+		// TODO: Is this actually valid??? - only needed for Image2dArray???
+		/*image->InstanceTransitionImageLayout(
 			image->GetImage(),
 			image->GetFormat(),
 			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -138,8 +178,8 @@ namespace zae
 			VK_IMAGE_ASPECT_COLOR_BIT,
 			image->GetMipLevels(),
 			0,
-			layerCount,
-			0);
+			1,
+			0);*/
 
 #ifdef ZAE_DEBUG
 		Log::Out("Font Type ", filename, " loaded ", glyphs.size(), " glyphs in ", (Time::Now() - debugStart).AsMilliseconds<float>(), "ms\n");

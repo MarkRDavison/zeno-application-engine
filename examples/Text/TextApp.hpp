@@ -2,15 +2,12 @@
 
 #include <zae/Engine/App.hpp>
 
-namespace test
+class TextApp : public zae::App
 {
-	class TextApp : public zae::App
-	{
-	public:
-		TextApp();
-		~TextApp();
+public:
+	TextApp();
+	~TextApp();
 
-		void Start() override;
-		void Update() override;
-	};
-}
+	void Start() override;
+	void Update() override;
+};
