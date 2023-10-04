@@ -37,7 +37,7 @@ namespace zae
 		bool IsOpen() const noexcept { return library != nullptr; }
 
 		template <typename T>
-		T GetSpaceWidth() const { return GetGlyph(' ').value().width; }
+		T GetSpaceWidth() const { return (T)(size / 2); }
 
 		template <typename T>
 		T GetSize() const { return static_cast<T>(size); }

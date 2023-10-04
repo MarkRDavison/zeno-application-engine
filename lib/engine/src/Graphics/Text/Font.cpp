@@ -140,6 +140,7 @@ namespace zae
 				pen.y = currentMaxY;
 			}
 
+			indices.insert({ c, glyphs.size() });
 			glyphs.emplace_back(
 				Glyph{
 					.sizeX = (int)face->glyph->bitmap.width,

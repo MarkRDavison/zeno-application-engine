@@ -1,13 +1,11 @@
 #pragma once
 
-#include "../TextModelVertex.hpp"
-
 #include <zae/Engine/Graphics/Models/Model.hpp>
 #include <zae/Engine/Graphics/Buffers/UniformHandler.hpp>
 #include <zae/Engine/Graphics/Descriptors/DescriptorsHandler.hpp>
 #include <zae/Engine/Graphics/Pipelines/Pipeline.hpp>
 #include <zae/Engine/Graphics/Pipelines/PipelineGraphics.hpp>
-#include <zae/Engine/Graphics/Text/Font.hpp>
+#include <zae/Engine/Graphics/Text/Text.hpp>
 
 class TextSubrender : public zae::Subrender
 {
@@ -34,5 +32,6 @@ private:
 	zae::UniformHandler uniformScene;
 
 	std::shared_ptr<zae::Font> font;
+	std::shared_ptr<zae::Text> text;
 	std::unique_ptr<zae::Model> model;
 };

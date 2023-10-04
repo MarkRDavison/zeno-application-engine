@@ -10,7 +10,7 @@ TextSubrender::TextSubrender(const zae::Pipeline::Stage& stage) :
 	pipeline(
 		stage,
 		{ "shaders/testText.vert", "shaders/testText.frag" },
-		{ TextModelVertex::GetVertexInput() },
+		{ zae::TextVertex::GetVertexInput() },
 		{  },
 		zae::PipelineGraphics::Mode::Polygon,
 		zae::PipelineGraphics::Depth::ReadWrite,
@@ -26,12 +26,16 @@ TextSubrender::TextSubrender(const zae::Pipeline::Stage& stage) :
 
 void TextSubrender::Render(const zae::CommandBuffer& commandBuffer)
 {
+	const auto size = zae::Windows::Get()->GetWindow(0)->GetSize();
+	ubo.view = zae::Matrix4::OrthographicMatrix(0.0f, size.x, 0.0f, size.y, -1.0f, 1000.0f);
+
 	pipeline.BindPipeline(commandBuffer);
 
 	// These have to match the order in the shader
 	uniformScene.Push("model", ubo.model);
 	uniformScene.Push("view", ubo.view);
 	uniformScene.Push("proj", ubo.proj);
+	uniformScene.Push("textColor", zae::Colour::Black);
 
 	// This has to match the uniform setting in the shader
 	descriptorSet.Push("UniformBufferObject", uniformScene);
@@ -44,21 +48,30 @@ void TextSubrender::Render(const zae::CommandBuffer& commandBuffer)
 	descriptorSet.Update(pipeline);
 	descriptorSet.BindDescriptor(commandBuffer, pipeline);
 
-	// Draw the model, this time it knows it has a indexbuffer and does the indexed draw
-	// It will also pass the UBO to the shader
-	model->CmdRender(commandBuffer);
+	if (text->IsLoaded())
+	{
+		text->model->CmdRender(commandBuffer);
+	}
+	else
+	{
+		// Draw the model, this time it knows it has a indexbuffer and does the indexed draw
+		// It will also pass the UBO to the shader
+		model->CmdRender(commandBuffer);
+	}
 }
 
 void TextSubrender::Init()
 {
+	const auto size = zae::Windows::Get()->GetWindow(0)->GetSize();
+	ubo.view = zae::Matrix4::OrthographicMatrix(0.0f, size.x, 0.0f, size.y, -1.0f, 1000.0f);
+	ubo.model = zae::Matrix4(1.0f).Translate({64.0f, 64.0f, 0.0f});
 	ubo.proj[1][1] *= -1;
-	ubo.model = zae::Matrix4();
 
-	const std::vector<TextModelVertex> vertices = {
-		{{-0.95f, -0.95f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-		{{+0.95f, -0.95f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{+0.95f, +0.95f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.95f, +0.95f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+	const std::vector<zae::TextVertex> vertices = {
+		{{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
+		{{+0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
+		{{+0.5f, +0.5f, 0.0f}, {1.0f, 1.0f}},
+		{{-0.5f, +0.5f, 0.0f}, {0.0f, 1.0f}},
 	};
 
 	// Create a set of indices.
@@ -66,8 +79,12 @@ void TextSubrender::Init()
 		0, 1, 2, 2, 3, 0
 	};
 
+	font = std::make_shared<zae::Font>("fonts/Arial.ttf");
+
+	text = std::make_shared<zae::Text>(font, "(c) Hello World! How are you going?");
+
+	text->LoadText();
+
 	// Create a model from that set of Vertices and indices.
 	model = std::make_unique<zae::Model>(vertices, indices);
-
-	font = std::make_shared<zae::Font>("fonts/Arial.ttf");
 }
