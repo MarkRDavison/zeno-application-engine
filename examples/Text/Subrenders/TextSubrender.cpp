@@ -35,7 +35,8 @@ void TextSubrender::Render(const zae::CommandBuffer& commandBuffer)
 	uniformScene.Push("model", ubo.model);
 	uniformScene.Push("view", ubo.view);
 	uniformScene.Push("proj", ubo.proj);
-	uniformScene.Push("textColor", zae::Colour::Black);
+	uniformScene.Push("internalColor", zae::Colour::White);
+	uniformScene.Push("outlineColor", zae::Colour::Black);
 
 	// This has to match the uniform setting in the shader
 	descriptorSet.Push("UniformBufferObject", uniformScene);
@@ -79,9 +80,9 @@ void TextSubrender::Init()
 		0, 1, 2, 2, 3, 0
 	};
 
-	font = std::make_shared<zae::Font>("fonts/Arial.ttf");
+	font = std::make_shared<zae::Font>("fonts/SegoeUi.ttf");
 
-	text = std::make_shared<zae::Text>(font, "(c) Hello World! How are you going?");
+	text = std::make_shared<zae::Text>(font, "(c) Hello World! How are you going?!@#$%^&*{}<>");
 
 	text->LoadText();
 
