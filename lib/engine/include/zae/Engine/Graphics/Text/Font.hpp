@@ -25,6 +25,8 @@ namespace zae
 			int textureY;
 		};
 
+		static std::shared_ptr<Font> Create(std::filesystem::path filename, std::size_t size = 64, bool load = true);
+
 		explicit Font(std::filesystem::path filename, std::size_t size = 64, bool load = true);
 		~Font();
 

@@ -1,4 +1,5 @@
 #include <zae/Engine/Graphics/Text/Text.hpp>
+#include <zae/Engine/Devices/Windows.hpp>
 
 namespace zae
 {
@@ -16,22 +17,35 @@ namespace zae
 	) : 
 		isDirty(true),
 		font(font),
-		string(string)
+		string(string),
+		size(64)
 	{
 	}
 
 	void Text::SetString(const std::string& string) 
 	{
 		isDirty |= string == this->string;
+		this->string = string;
 	}
 
 	void Text::SetFont(const std::shared_ptr<Font>& font) 
 	{
 		isDirty |= font == this->font;
+		this->font = font;
+	}
+
+	void Text::SetSize(unsigned size)
+	{
+		isDirty |= size == this->size;
+		this->size = size;
 	}
 
 	bool Text::IsLoaded() const {
 		return !string.empty() && model;
+	}
+	bool Text::IsDirty() const
+	{
+		return isDirty;
 	}
 
 	void AddVerticiesForGlyph(Vector2f cursor, float scale, const Font::Glyph& glyph, std::vector<TextVertex>& verticies)
@@ -58,7 +72,9 @@ namespace zae
 
 	void Text::LoadText()
 	{
-		const float scale = 1.0f;
+		if (string.empty()) { return; }
+		const float TargetSize = static_cast<float>(size);
+		const float scale = TargetSize / font->GetSize<float>();
 		std::vector<TextVertex> verticies;
 
 		Vector2f cursor;
@@ -87,7 +103,7 @@ namespace zae
 			vertex.inTexCoord.x /= fontTextureSize.x;
 			vertex.inTexCoord.y /= fontTextureSize.y;
 		}
-
+		
 		model = std::make_unique<Model>(verticies);
 	}
 

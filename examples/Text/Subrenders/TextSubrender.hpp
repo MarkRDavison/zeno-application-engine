@@ -33,5 +33,4 @@ private:
 
 	std::shared_ptr<zae::Font> font;
 	std::shared_ptr<zae::Text> text;
-	std::unique_ptr<zae::Model> model;
 };

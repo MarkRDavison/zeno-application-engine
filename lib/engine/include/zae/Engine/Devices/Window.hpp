@@ -9,6 +9,7 @@
 #include <zae/Core/Math/Vector2.hpp>
 #include <zae/Engine/Devices/Monitor.hpp>
 #include <zae/Engine/Devices/WindowTypes.hpp>
+#include <zae/Engine/Devices/Cursor.hpp>
 
 struct GLFWwindow;
 
@@ -176,6 +177,12 @@ namespace zae
 		 * @param hidden If the system cursor should be hidden when not shown.
 		 */
 		void SetCursorHidden(bool hidden);
+
+		/**
+		 * Sets the cursor new style.
+		 * @param cursor The cursor style to use.
+		 */
+		void SetCursor(const Cursor* cursor);
 
 		/**
 		 * Gets the current state of a key.

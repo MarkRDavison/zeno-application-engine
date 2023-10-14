@@ -18,6 +18,20 @@ namespace zae
 		return 1.0 / 64.0 * double(x);
 	}
 
+	std::shared_ptr<Font> Font::Create(std::filesystem::path filename, std::size_t size, bool load)
+	{
+		auto node = ResourceNode(filename.string(), filename.string());
+		if (auto resource = Resources::Get()->Find<Font>(node))
+		{
+			return resource;
+		}
+
+
+		auto result = std::make_shared<Font>(filename, size, load);
+		Resources::Get()->Add(node, std::dynamic_pointer_cast<Resource>(result));
+		return result;
+	}
+
 	Font::Font(std::filesystem::path filename, std::size_t size, bool load) :
 		filename(std::move(filename)),
 		size(size)

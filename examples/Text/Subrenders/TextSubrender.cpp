@@ -28,6 +28,7 @@ void TextSubrender::Render(const zae::CommandBuffer& commandBuffer)
 {
 	const auto size = zae::Windows::Get()->GetWindow(0)->GetSize();
 	ubo.view = zae::Matrix4::OrthographicMatrix(0.0f, size.x, 0.0f, size.y, -1.0f, 1000.0f);
+	ubo.model = zae::Matrix4(1.0f).Translate({ 64.0f, size.y - 64.0f * 2.0f, 0.0f });
 
 	pipeline.BindPipeline(commandBuffer);
 
@@ -49,43 +50,20 @@ void TextSubrender::Render(const zae::CommandBuffer& commandBuffer)
 	descriptorSet.Update(pipeline);
 	descriptorSet.BindDescriptor(commandBuffer, pipeline);
 
-	if (text->IsLoaded())
-	{
-		text->model->CmdRender(commandBuffer);
-	}
-	else
-	{
-		// Draw the model, this time it knows it has a indexbuffer and does the indexed draw
-		// It will also pass the UBO to the shader
-		model->CmdRender(commandBuffer);
-	}
+	text->GetModel()->CmdRender(commandBuffer);
 }
 
 void TextSubrender::Init()
 {
+	const unsigned TextSize = 64;
 	const auto size = zae::Windows::Get()->GetWindow(0)->GetSize();
 	ubo.view = zae::Matrix4::OrthographicMatrix(0.0f, size.x, 0.0f, size.y, -1.0f, 1000.0f);
-	ubo.model = zae::Matrix4(1.0f).Translate({64.0f, 64.0f, 0.0f});
+	ubo.model = zae::Matrix4(1.0f).Translate({ (float)TextSize * 2, (float)TextSize * 2, 0.0f});
 	ubo.proj[1][1] *= -1;
-
-	const std::vector<zae::TextVertex> vertices = {
-		{{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
-		{{+0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
-		{{+0.5f, +0.5f, 0.0f}, {1.0f, 1.0f}},
-		{{-0.5f, +0.5f, 0.0f}, {0.0f, 1.0f}},
-	};
-
-	// Create a set of indices.
-	const std::vector<uint32_t> indices = {
-		0, 1, 2, 2, 3, 0
-	};
 
 	font = std::make_shared<zae::Font>("fonts/SegoeUi.ttf");
 
-	text = std::make_shared<zae::Text>(font, "(c) Hello World! How are you going?!@#$%^&*{}<>");
-
+	text = std::make_shared<zae::Text>(font, "(c) Hello World!?@#$=+#@%^&*{}<>");
+	text->SetSize(TextSize);
 	text->LoadText();
-
-	// Create a model from that set of Vertices and indices.
-	model = std::make_unique<zae::Model>(vertices, indices);
 }

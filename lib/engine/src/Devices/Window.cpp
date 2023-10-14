@@ -337,6 +337,10 @@ namespace zae
 		cursorHidden = hidden;
 	}
 
+	void Window::SetCursor(const Cursor* cursor)
+	{
+		glfwSetCursor(window, cursor ? cursor->cursor : nullptr);
+	}
 
 	InputAction Window::GetKey(Key key) const
 	{

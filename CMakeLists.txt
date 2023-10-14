@@ -17,7 +17,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
   CMAKE_POLICY(SET CMP0110 NEW)
 endif()
 
-find_package(Vulkan REQUIRED FATAL_ERROR)
+find_package(Vulkan REQUIRED REQUIRED)
 
 # VOLK
 add_subdirectory(thirdparty/volk)
