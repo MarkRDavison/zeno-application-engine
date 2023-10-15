@@ -18,7 +18,9 @@ namespace zae
 		isDirty(true),
 		font(font),
 		string(string),
-		size(64)
+		size(64),
+		internal(Colour::White),
+		external(Colour::Black)
 	{
 	}
 
@@ -40,6 +42,18 @@ namespace zae
 		this->size = size;
 	}
 
+	void Text::SetInternalColour(const Colour& internalColour)
+	{
+		isDirty |= internalColour == this->internal;
+		internal = internalColour;
+	}
+
+	void Text::SetExternalColour(const Colour& externalColour)
+	{
+		isDirty |= externalColour == this->external;
+		external = externalColour;
+	}
+
 	bool Text::IsLoaded() const {
 		return !string.empty() && model;
 	}
@@ -48,13 +62,13 @@ namespace zae
 		return isDirty;
 	}
 
-	void AddVerticiesForGlyph(Vector2f cursor, float scale, const Font::Glyph& glyph, std::vector<TextVertex>& verticies)
+	void AddVerticiesForGlyph(Vector2f cursor, float scaleX, float scaleY, const Font::Glyph& glyph, std::vector<TextVertex>& verticies)
 	{
-		const float xPos = cursor.x + glyph.bearingX * scale;
-		const float yPos = cursor.y + (-glyph.sizeY + glyph.bearingY) * scale;
+		const float xPos = cursor.x + glyph.bearingX * scaleX;
+		const float yPos = cursor.y + (-glyph.sizeY + glyph.bearingY) * scaleY;
 
-		const float w = glyph.sizeX * scale;
-		const float h = glyph.sizeY * scale;
+		const float w = glyph.sizeX * scaleX;
+		const float h = glyph.sizeY * scaleY;
 
 		const float tx = glyph.textureX;
 		const float ty = glyph.textureY;
@@ -70,12 +84,12 @@ namespace zae
 		verticies.emplace_back(TextVertex{ .position = Vector3f(xPos + w, yPos + h, 0.0f), .inTexCoord = Vector2f(tx + tw, ty) });
 	}
 
-	void Text::LoadText(float scale)
+	void Text::LoadText(float scaleX, float scaleY)
 	{
 		if (string.empty()) { return; }
 		const float TargetSize = static_cast<float>(size);
-		const float finalScale = scale * TargetSize / font->GetSize<float>();
-		std::vector<TextVertex> verticies;
+		const float finalScale = TargetSize / font->GetSize<float>();
+		verticies.clear();
 
 		Vector2f cursor;
 
@@ -83,15 +97,15 @@ namespace zae
 		{
 			if (c == ' ')
 			{
-				cursor.x += font->GetSpaceWidth<float>() * scale;
+				cursor.x += font->GetSpaceWidth<float>() * scaleX * finalScale;
 				continue;
 			}
 
 			const auto& glyph = font->GetGlyph(c);
 			if (glyph.has_value())
 			{
-				AddVerticiesForGlyph(cursor, finalScale, glyph.value(), verticies);
-				cursor.x += (glyph.value().advance >> 6) * finalScale;
+				AddVerticiesForGlyph(cursor, finalScale * scaleX, finalScale * scaleY, glyph.value(), verticies);
+				cursor.x += (glyph.value().advance >> 6) * finalScale * scaleX;
 			}
 
 		}
@@ -108,6 +122,7 @@ namespace zae
 	}
 	void Text::LoadText()
 	{
+		LoadText(1.0f, 1.0f);
 	}
 
 }

@@ -23,11 +23,12 @@ namespace zae
 			.SetWidth<PixelConstraint>(460)
 			.SetHeight<PixelConstraint>(64)
 			.SetX<PixelConstraint>(0, UiAnchor::Centre)
-			.SetY<PixelConstraint>(128, UiAnchor::Centre);
+			.SetY<PixelConstraint>(-128, UiAnchor::Centre);
 		textCopyright.SetFont(Font::Create("Fonts/ProximaNova-Regular.ttf"));
+		textCopyright.SetFontSize(16);
 		//textCopyright.SetJustify(Text::Justify::Centre);
-		//textCopyright.SetTextColour(Colour::White);
-		textCopyright.SetString("Copyright (C) 2019, Zenotian Games - All Rights Reserved.");
+		textCopyright.SetTextColour(Colour::White, Colour::Black);
+		textCopyright.SetString("Copyright (C) 2023, Zenotian Games - All Rights Reserved.");
 		AddChild(&textCopyright);
 
 		Timers::Get()->Once(this, 

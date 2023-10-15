@@ -26,20 +26,28 @@ namespace zae
 		void SetSize(unsigned size);
 		unsigned GetSize() const { return size; }
 
+		void SetInternalColour(const Colour& internalColour);
+		Colour GetInternalColour() const { return internal; }
+		void SetExternalColour(const Colour& externalColour);
+		Colour GetExternalColour() const { return external; }
+
 		bool IsLoaded() const;
 		bool IsDirty() const;
 
-		void LoadText(float scale);
+		void LoadText(float scaleX, float scaleY);
 		void LoadText();
 
 		const std::unique_ptr<Model>& GetModel() const { return model; }
 
+		std::vector<TextVertex> verticies;
 	private:
 		bool isDirty;
 		std::string string;
 		std::shared_ptr<Font> font;
 		std::unique_ptr<Model> model;
 		unsigned size;
+		Colour internal;
+		Colour external;
 	};
 
 }

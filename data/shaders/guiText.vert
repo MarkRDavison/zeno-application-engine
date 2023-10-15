@@ -17,10 +17,12 @@ layout(location = 1) in vec2 inTexCoord;
 layout(location = 0) out vec3 internalColor;
 layout(location = 1) out vec3 outlineColor;
 layout(location = 2) out vec2 fragTexCoord;
+layout(location = 3) out float alpha;
 
 void main() {
-    gl_Position = ubo.modelView * vec4(inPosition.x * ubo.scale, inPosition.y * ubo.scale, inPosition.z, 1.0);
+    gl_Position = ubo.modelView * vec4(inPosition * ubo.scale, 1.0);
     internalColor = ubo.internalColor.rgb;
     outlineColor = ubo.outlineColor.rgb;
     fragTexCoord = inTexCoord;
+	alpha = ubo.alpha;
 }

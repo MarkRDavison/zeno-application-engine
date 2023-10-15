@@ -21,6 +21,13 @@ namespace zae
 		void SetString(const std::string& string);
 		const std::string& GetString() const { return text.GetString(); }
 
+		void SetFontSize(unsigned size);
+		unsigned GetFontSize() const { return text.GetSize(); }
+
+		void SetTextColour(
+			const std::optional<Colour>& internal = std::nullopt,
+			const std::optional<Colour>& external = std::nullopt);
+
 	private:
 		Text text;
 		bool dirty = true;

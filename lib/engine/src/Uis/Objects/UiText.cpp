@@ -8,13 +8,14 @@ namespace zae
 
 	}
 
-
 	void UiText::UpdateObject()
 	{
 		dirty |= GetScreenSize() != lastSize;
 		if (dirty)
 		{
-			text.LoadText(1.0f / 64.0f);
+			const auto& size = Vector2f(GetScreenSize());
+			// TODO: scale text height to font size based on screen resolution
+			text.LoadText(1.0f / text.GetFont()->GetSize<float>(), 1.0f / text.GetFont()->GetSize<float>() * (size.x / size.y));
 		}
 
 		auto proj = Matrix4(1.0f);
@@ -23,9 +24,9 @@ namespace zae
 		// Updates uniforms.
 		uniformScene.Push("modelView", proj * GetModelView());
 		uniformScene.Push("alpha", GetScreenAlpha());
-		uniformScene.Push("scale", 1.0f);
-		uniformScene.Push("internalColor", zae::Colour::White);
-		uniformScene.Push("outlineColor", zae::Colour::Black);
+		uniformScene.Push("scale", 0.125f);
+		uniformScene.Push("internalColor", text.GetInternalColour());
+		uniformScene.Push("outlineColor", text.GetExternalColour());
 	}
 
 	bool UiText::CmdRender(const CommandBuffer& commandBuffer, const PipelineGraphics& pipeline)
@@ -66,6 +67,29 @@ namespace zae
 		{
 			dirty = true;
 			text.SetString(string);
+		}
+	}
+
+	void UiText::SetFontSize(unsigned size)
+	{
+		if (GetFontSize() != size)
+		{
+			dirty = true;
+			text.SetSize(size);
+		}
+	}
+
+	void UiText::SetTextColour(
+		const std::optional<Colour>& internal,
+		const std::optional<Colour>& external)
+	{
+		if (internal.has_value())
+		{
+			text.SetInternalColour(internal.value());
+		}
+		if (external.has_value())
+		{
+			text.SetExternalColour(external.value());
 		}
 	}
 }
