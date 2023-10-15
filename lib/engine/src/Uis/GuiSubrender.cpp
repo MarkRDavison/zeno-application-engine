@@ -24,10 +24,10 @@ namespace zae
 
 		for (const auto& screenObject : objects)
 		{
-			//if (!screenObject->IsEnabled())
-			//{
-			//	continue;
-			//}
+			if (!screenObject->IsEnabled())
+			{
+				continue;
+			}
 
 			if (auto object = dynamic_cast<Gui*>(screenObject))
 			{

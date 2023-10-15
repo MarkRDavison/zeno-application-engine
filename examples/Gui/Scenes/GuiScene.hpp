@@ -4,6 +4,8 @@
 
 #include "../Ui/Panels.hpp"
 
+#include <zae/Engine/Uis/Objects/UiStartLogo.hpp>
+
 class GuiScene : public zae::Scene
 {
 public:
@@ -15,4 +17,5 @@ protected:
 
 private:
 	Panels panels;
+	zae::UiStartLogo logo;
 };

@@ -1,7 +1,7 @@
 #include <zae/Engine/Uis/Gui.hpp>
 
 #include <zae/Engine/Graphics/Graphics.hpp>
-//#include <zae/Engine/Uis/Drivers/ConstantDriver.hpp>
+#include <zae/Engine/Uis/Drivers/ConstantDriver.hpp>
 #include <zae/Engine/Graphics/Models/Vertex2d.hpp>
 
 namespace zae
@@ -19,9 +19,9 @@ namespace zae
 	};
 
 	Gui::Gui() :
-		model(std::make_unique<Model>(VERTICES, INDICES))
+		model(std::make_unique<Model>(VERTICES, INDICES)),
+		colourDriver(std::make_unique<ConstantDriver<Colour>>(Colour::White))
 	{
-		//colourDriver(std::make_unique<ConstantDriver<Colour>>(Colour::White))
 	}
 
 	void Gui::UpdateObject()
@@ -31,15 +31,15 @@ namespace zae
 		auto row = selectedRow / numberOfRows;
 		atlasOffset = Vector2f(static_cast<float>(column), static_cast<float>(row)) / static_cast<float>(numberOfRows);
 
-		//colourDriver->Update(Engine::Get()->GetDelta());
+		colourDriver->Update(Engine::Get()->GetDelta());
 
 		// Updates uniforms.
-		//uniformObject.Push("modelView", GetModelView());
-		//uniformObject.Push("alpha", GetScreenAlpha());
-		//
-		//uniformObject.Push("aspectRatio", static_cast<float>(GetScreenSize().x) / static_cast<float>(GetScreenSize().y));
+		uniformObject.Push("modelView", GetModelView());
+		uniformObject.Push("alpha", GetScreenAlpha());
+		
+		uniformObject.Push("aspectRatio", static_cast<float>(GetScreenSize().x) / static_cast<float>(GetScreenSize().y));
 
-		//uniformObject.Push("colourOffset", colourDriver->Get());
+		uniformObject.Push("colourOffset", colourDriver->Get());
 		uniformObject.Push("atlasOffset", atlasOffset);
 		uniformObject.Push("atlasScale", atlasScale);
 		uniformObject.Push("atlasRows", static_cast<float>(numberOfRows));
@@ -49,10 +49,10 @@ namespace zae
 	bool Gui::CmdRender(const CommandBuffer& commandBuffer, const PipelineGraphics& pipeline)
 	{
 		// Gets if this should be rendered.
-		//if (!image || !IsEnabled())
-		//{
-		//	return false;
-		//}
+		if (!image || !IsEnabled())
+		{
+			return false;
+		}
 
 		// Updates descriptors.
 		descriptorSet.Push("UniformObject", uniformObject);
@@ -63,13 +63,13 @@ namespace zae
 			return false;
 		}
 
-		//auto scissor = GetScissor();
-		//VkRect2D scissorRect = {};
-		//scissorRect.offset.x = scissor ? static_cast<int32_t>(scissor->x) : 0;
-		//scissorRect.offset.y = scissor ? static_cast<int32_t>(scissor->y) : 0;
-		//scissorRect.extent.width = scissor ? static_cast<int32_t>(scissor->z) : Windows::Get()->GetWindow(0)->GetSize().x;
-		//scissorRect.extent.height = scissor ? static_cast<int32_t>(scissor->w) : Windows::Get()->GetWindow(0)->GetSize().y;
-		//vkCmdSetScissor(commandBuffer, 0, 1, &scissorRect);
+		auto scissor = GetScissor();
+		VkRect2D scissorRect = {};
+		scissorRect.offset.x = scissor ? static_cast<int32_t>(scissor->x) : 0;
+		scissorRect.offset.y = scissor ? static_cast<int32_t>(scissor->y) : 0;
+		scissorRect.extent.width = scissor ? static_cast<int32_t>(scissor->z) : Windows::Get()->GetWindow(0)->GetSize().x;
+		scissorRect.extent.height = scissor ? static_cast<int32_t>(scissor->w) : Windows::Get()->GetWindow(0)->GetSize().y;
+		vkCmdSetScissor(commandBuffer, 0, 1, &scissorRect);
 
 		// Draws the object.
 		descriptorSet.BindDescriptor(commandBuffer, pipeline);

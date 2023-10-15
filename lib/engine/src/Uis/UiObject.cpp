@@ -1,16 +1,31 @@
 #include <zae/Engine/Uis/UiObject.hpp>
 #include <zae/Engine/Graphics/Graphics.hpp>
 #include <zae/Engine/Uis/Uis.hpp>
+#include <zae/Engine/Uis/Drivers/ConstantDriver.hpp>
 
 namespace zae
 {
 
-	UiObject::UiObject()
+	UiObject::UiObject() :
+		alphaDriver(std::make_unique<ConstantDriver<float>>(1.0f)),
+		scaleDriver(std::make_unique<ConstantDriver<Vector2f>>(Vector3f(1.0f))),
+		screenDepth(0.0f),
+		screenAlpha(1.0f),
+		screenScale(1.0f)
 	{
 	}
 
 	UiObject::~UiObject()
 	{
+		if (parent)
+		{
+			parent->RemoveChild(this);
+		}
+
+		for (auto& child : children)
+		{
+			child->parent = nullptr;
+		}
 	}
 
 	void UiObject::Update(const Matrix4& viewMatrix, std::vector<UiObject*>& list, UiObject*& cursorSelect)
@@ -20,85 +35,91 @@ namespace zae
 			return;
 		}
 
-		//// Alpha and scale updates.
-		//alphaDriver->Update(Engine::Get()->GetDelta());
-		//scaleDriver->Update(Engine::Get()->GetDelta());
+		// Alpha and scale updates.
+		alphaDriver->Update(Engine::Get()->GetDelta());
+		scaleDriver->Update(Engine::Get()->GetDelta());
 
-		//UpdateObject();
+		UpdateObject();
 
-		//// Transform updates.
-		//constraints.Update(parent ? &parent->constraints : nullptr);
+		// Transform updates.
+		constraints.Update(parent ? &parent->constraints : nullptr);
 
-		//screenPosition = { constraints.GetX()->Get(), constraints.GetY()->Get() };
-		//screenSize = { constraints.GetWidth()->Get(), constraints.GetHeight()->Get() };
-		//screenDepth = constraints.GetDepth();
-		//screenAlpha = alphaDriver->Get();
-		//screenScale = scaleDriver->Get();
+		screenPosition = { constraints.GetX()->Get(), constraints.GetY()->Get() };
+		screenSize = { constraints.GetWidth()->Get(), constraints.GetHeight()->Get() };
+		screenDepth = constraints.GetDepth();
+		screenAlpha = alphaDriver->Get();
+		screenScale = scaleDriver->Get();
 
-		//if (parent)
-		//{
-		//	screenAlpha *= parent->screenAlpha;
-		//	screenScale *= parent->screenScale;
-		//}
+		if (parent)
+		{
+			screenAlpha *= parent->screenAlpha;
+			screenScale *= parent->screenScale;
+		}
 
-		//auto modelMatrix = Matrix4::TransformationMatrix(
-		//	Vector3f(screenPosition, 0.01f * screenDepth),
-		//	Vector3f(), 
-		//	Vector3f(screenSize));
+		auto modelMatrix = Matrix4::TransformationMatrix(
+			Vector3f(screenPosition, 0.01f * screenDepth),
+			Vector3f(), 
+			Vector3f(screenSize));
 
-		//modelView = viewMatrix * modelMatrix;
+		modelView = viewMatrix * modelMatrix;
 
-		//bool selected = false;
-		//if (IsEnabled() && Windows::Get()->GetWindow(0)->IsWindowSelected() && Windows::Get()->GetWindow(0)->IsFocused())
-		//{
-		//	auto distance = Windows::Get()->GetWindow(0)->GetMousePosition() - screenPosition;
-		//	selected = 
-		//		distance.x <= screenSize.x && 
-		//		distance.y <= screenSize.y &&
-		//		distance.x >= 0.0f && 
-		//		distance.y >= 0.0f;
-		//}
+		bool selected = false;
+		if (IsEnabled() && Windows::Get()->GetWindow(0)->IsWindowSelected() && Windows::Get()->GetWindow(0)->IsFocused())
+		{
+			auto distance = Windows::Get()->GetWindow(0)->GetMousePosition() - screenPosition;
+			selected = 
+				distance.x <= screenSize.x && 
+				distance.y <= screenSize.y &&
+				distance.x >= 0.0f && 
+				distance.y >= 0.0f;
+		}
 
-		//if (this->selected != selected)
-		//{
-		//	this->selected = selected;
-		//	onSelected.invoke(selected);
-		//}
+		if (this->selected != selected)
+		{
+			this->selected = selected;
+			onSelected.invoke(selected);
+		}
 
-		//if (selected)
-		//{
-		//	if (cursorHover)
-		//	{
-		//		cursorSelect = this;
-		//	}
-		//	
-		//	for (uint8_t m = 0; m < (uint8_t)MouseButton::COUNT; ++m)
-		//	{
-		//		auto button = (MouseButton)m;
+		if (selected)
+		{
+			if (cursorHover)
+			{
+				cursorSelect = this;
+			}
+			
+			for (uint8_t m = 0; m < (uint8_t)MouseButton::COUNT; ++m)
+			{
+				auto button = (MouseButton)m;
 
-		//		if (Uis::Get()->WasDown(button))
-		//		{
-		//			onClick(button);
-		//		}
-		//	}
-		//}
+				if (Uis::Get()->WasDown(button))
+				{
+					onClick(button);
+				}
+			}
+		}
 
-		//// Adds this object to the list if it is visible.
-		//if (screenAlpha > 0.0f)
-		//{
-		//	list.emplace_back(this);
-		//}
+		// Adds this object to the list if it is visible.
+		if (screenAlpha > 0.0f)
+		{
+			list.emplace_back(this);
+		}
 
-		//// Update all children objects.
-		//for (auto& child : children)
-		//{
-		//	child->Update(viewMatrix, list, cursorSelect);
-		//}
+		// Update all children objects.
+		for (auto& child : children)
+		{
+			child->Update(viewMatrix, list, cursorSelect);
+		}
 	}
 
 	void UiObject::UpdateObject()
 	{
 	}
+
+	void UiObject::CancelEvent(MouseButton button) const
+	{
+		Uis::Get()->CancelWasEvent(button);
+	}
+
 	void UiObject::AddChild(UiObject* child)
 	{
 		if (child->parent || this == child)

@@ -70,11 +70,11 @@ namespace zae
 		verticies.emplace_back(TextVertex{ .position = Vector3f(xPos + w, yPos + h, 0.0f), .inTexCoord = Vector2f(tx + tw, ty) });
 	}
 
-	void Text::LoadText()
+	void Text::LoadText(float scale)
 	{
 		if (string.empty()) { return; }
 		const float TargetSize = static_cast<float>(size);
-		const float scale = TargetSize / font->GetSize<float>();
+		const float finalScale = scale * TargetSize / font->GetSize<float>();
 		std::vector<TextVertex> verticies;
 
 		Vector2f cursor;
@@ -83,15 +83,15 @@ namespace zae
 		{
 			if (c == ' ')
 			{
-				cursor.x += font->GetSpaceWidth<float>();
+				cursor.x += font->GetSpaceWidth<float>() * scale;
 				continue;
 			}
 
 			const auto& glyph = font->GetGlyph(c);
 			if (glyph.has_value())
 			{
-				AddVerticiesForGlyph(cursor, scale, glyph.value(), verticies);
-				cursor.x += (glyph.value().advance >> 6) * scale;
+				AddVerticiesForGlyph(cursor, finalScale, glyph.value(), verticies);
+				cursor.x += (glyph.value().advance >> 6) * finalScale;
 			}
 
 		}
@@ -103,8 +103,11 @@ namespace zae
 			vertex.inTexCoord.x /= fontTextureSize.x;
 			vertex.inTexCoord.y /= fontTextureSize.y;
 		}
-		
+
 		model = std::make_unique<Model>(verticies);
+	}
+	void Text::LoadText()
+	{
 	}
 
 }

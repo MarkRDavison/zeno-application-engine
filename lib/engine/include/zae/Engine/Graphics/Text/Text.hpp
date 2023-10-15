@@ -29,6 +29,7 @@ namespace zae
 		bool IsLoaded() const;
 		bool IsDirty() const;
 
+		void LoadText(float scale);
 		void LoadText();
 
 		const std::unique_ptr<Model>& GetModel() const { return model; }

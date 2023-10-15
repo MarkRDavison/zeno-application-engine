@@ -4,7 +4,7 @@
 
 GuiScene::GuiScene(zae::Camera* camera) : zae::Scene(camera)
 {
-	//zae::Uis::Get()->GetCanvas().AddChild(&panels);
+	zae::Uis::Get()->GetCanvas().AddChild(&logo);
 }
 
 void GuiScene::Start()

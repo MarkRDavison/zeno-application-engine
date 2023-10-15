@@ -1,4 +1,5 @@
 #include <zae/Engine/Uis/Uis.hpp>
+#include <zae/Engine/Uis/Constraints/PixelConstraint.hpp>
 
 namespace zae
 {
@@ -7,10 +8,10 @@ namespace zae
 
 	Uis::Uis()
 	{
-		//canvas
-		//	.GetConstraints()
-		//	.SetWidth<PixelConstraint>(0)
-		//	.SetHeight<PixelConstraint>(0);
+		canvas
+			.GetConstraints()
+			.SetWidth<PixelConstraint>(0)
+			.SetHeight<PixelConstraint>(0);
 
 		for (uint8_t m = 0; m < (uint8_t)MouseButton::COUNT; ++m)
 		{
@@ -40,15 +41,15 @@ namespace zae
 			0.0f, size.y, 
 			-1.0f, 1.0f);
 
-		//canvas.GetConstraints().GetWidth()->SetOffset(size.x);
-		//canvas.GetConstraints().GetHeight()->SetOffset(size.y);
+		canvas.GetConstraints().GetWidth()->SetOffset(size.x);
+		canvas.GetConstraints().GetHeight()->SetOffset(size.y);
 
 		UiObject* cursorSelect = nullptr;
 		canvas.Update(viewMatrix, objects, cursorSelect);
 
 		if (lastCursorSelect != cursorSelect)
 		{
-			//Windows::Get()->GetWindow(0)->SetCursor(cursorSelect ? cursorSelect->GetCursorHover() : nullptr);
+			Windows::Get()->GetWindow(0)->SetCursor(cursorSelect ? cursorSelect->GetCursorHover() : nullptr);
 		}
 	}
 

@@ -1,7 +1,7 @@
 #include <zae/Engine/Uis/GuiTextSubrender.hpp>
 #include <zae/Engine/Uis/Uis.hpp>
 #include <zae/Engine/Uis/Gui.hpp>
-//#include <zae/Engine/Uis/Objects/UiText.hpp>
+#include <zae/Engine/Uis/Objects/UiText.hpp>
 #include <zae/Engine/Graphics/Models/Vertex2d.hpp>
 #include <zae/Engine/Graphics/Text/TextVertex.hpp>
 
@@ -33,15 +33,15 @@ namespace zae
 
 		for (const auto& screenObject : objects)
 		{
-			//if (!screenObject->IsEnabled())
-			//{
-			//	continue;
-			//}
-			//
-			//if (auto object = dynamic_cast<UiText*>(screenObject))
-			//{
-			//	object->CmdRender(commandBuffer, pipeline);
-			//}
+			if (!screenObject->IsEnabled())
+			{
+				continue;
+			}
+			
+			if (auto object = dynamic_cast<UiText*>(screenObject))
+			{
+				object->CmdRender(commandBuffer, pipeline);
+			}
 		}
 	}
 
