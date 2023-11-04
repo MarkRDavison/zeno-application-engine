@@ -1,5 +1,6 @@
 #include "GameApp.hpp"
 #include "GameRenderer.hpp"
+#include "Scenes/Game2DScene.hpp"
 #include "Scenes/Game3DScene.hpp"
 
 #include <zae/Engine/Files.hpp>
@@ -9,6 +10,7 @@
 #include <zae/Engine/Scene/Scenes.hpp>
 #include <zae/Game/InputActionManager.hpp>
 #include <zae/Game/Camera3DOrthographic.hpp>
+#include <zae/Game/Camera3DPerspective.hpp>
 
 GameApp::GameApp() : zae::App("Zeno Application Engine - Game Example")
 {
@@ -59,8 +61,17 @@ void GameApp::Start()
 		};
 		iam->RegisterInputActionType(action);
 	}
+	{
+		auto action = zae::InputActionType{
+			.name = "TOGGLE",
+			.key = zae::Key::T,
+			.actionType = zae::ActionType::KEY
+		};
+		iam->RegisterInputActionType(action);
+	}
 
-	zae::Scenes::Get()->SetScene(new Game3DScene(new zae::Camera3DOrthographic()));
+	scene2d = true;
+	zae::Scenes::Get()->SetScene(new Game2DScene(new zae::Camera3DOrthographic()));
 }
 
 void GameApp::Update()
@@ -73,6 +84,27 @@ void GameApp::Update()
 	if (iam->IsActionInvoked("CLICK"))
 	{
 		zae::Log::Info(std::quoted("CLICK"), " invoked.\n");
+	}
+	if (iam->IsActionInvoked("TOGGLE"))
+	{
+		zae::Log::Info(std::quoted("TOGGLE"), " invoked.\n");
+		scene2d = !scene2d;
+		if (scene2d)
+		{
+			auto scene = zae::Scenes::Get()->GetScene();
+			delete scene->GetCamera();
+			delete scene;
+			zae::Scenes::Get()->SetScene(new Game2DScene(new zae::Camera3DOrthographic()));
+		}
+		else
+		{
+			auto scene = zae::Scenes::Get()->GetScene();
+			delete scene->GetCamera();
+			delete scene;
+			auto camera = new zae::Camera3DPerspective();
+			camera->SetPosition({ 0.0f, 0.5f, 2.5f });
+			zae::Scenes::Get()->SetScene(new Game3DScene(camera));
+		}
 	}
 
 	iam->UpdateInputCache();

@@ -8,6 +8,7 @@ SET(CPP_FILES
     "game.cpp"
 	"GameApp.cpp"
 	"GameRenderer.cpp"
+	"Scenes/Game2DScene.cpp"
 	"Scenes/Game3DScene.cpp"
 )
 

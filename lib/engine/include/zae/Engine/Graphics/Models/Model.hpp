@@ -10,41 +10,11 @@
 
 namespace zae
 {
-	template<typename Base>
-	class ModelFactory
-	{
-	public:
-		using TCreateReturn = std::shared_ptr<Base>;
-
-		using TCreateMethodFilename = std::function<TCreateReturn(const std::filesystem::path&)>;
-		using TRegistryMapFilename = std::unordered_map<std::string, TCreateMethodFilename>;
-
-		virtual ~ModelFactory() = default;
-
-		/**
-		 * Creates a new model, or finds one with the same values.
-		 * @param filename The file to load the model from.
-		 * @return The model loaded from the filename.
-		 */
-		static TCreateReturn Create(const std::filesystem::path& filename)
-		{
-			auto fileExt = filename.extension().string();
-			auto it = RegistryFilename().find(fileExt);
-			return it == RegistryFilename().end() ? nullptr : it->second(filename);
-		}
-
-		static TRegistryMapFilename& RegistryFilename()
-		{
-			static TRegistryMapFilename impl;
-			return impl;
-		}
-
-	};
 
 	/**
 	 * @brief Resource that represents a model vertex and index buffer.
 	 */
-	class Model : public ModelFactory<Model>, public Resource
+	class Model : public Resource
 	{
 	public:
 		/**
@@ -87,6 +57,9 @@ namespace zae
 		uint32_t GetIndexCount() const { return indexCount; }
 		static VkIndexType GetIndexType() { return VK_INDEX_TYPE_UINT32; }
 
+		void SetMaterial(const std::string& material) { this->material = material; }
+		const std::string& GetMaterial() const { return this->material; }
+
 	protected:
 		template<typename T>
 		void Initialize(const std::vector<T>& vertices, const std::vector<uint32_t>& indices = {});
@@ -100,6 +73,8 @@ namespace zae
 		Vector3f minExtents;
 		Vector3f maxExtents;
 		float radius = 0.0f;
+
+		std::string material;
 	};
 
 	template<typename T>

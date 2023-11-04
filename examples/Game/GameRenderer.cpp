@@ -5,6 +5,8 @@
 #include <zae/Engine/Graphics/Pipelines/Pipeline.hpp>
 #include <zae/Engine/Graphics/Pipelines/PipelineGraphics.hpp>
 #include <zae/Engine/Scene/Entity/Subrenders/GraphicSubrender.hpp>
+#include <zae/Engine/Graphics/Mesh/Subrenders/MeshSubrender.hpp>
+#include <zae/Engine/Graphics/Mesh/Mesh.hpp>
 #include <zae/Engine/Resources/Resources.hpp>
 
 GameRenderer::GameRenderer()
@@ -30,51 +32,13 @@ GameRenderer::GameRenderer()
 
 void GameRenderer::Start()
 {
-
-	// Lets create a set of vertices and matching colors, a square this time.
-	//const std::vector<TestModelVertex> vertices = {
-	//	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	//	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-	//	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	//	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-
-	//	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	//	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-	//	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	//	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-	//};
-
-	//// Create a set of indices.
-	//const std::vector<uint32_t> indices = {
-	//	0, 1, 2, 2, 3, 0,
-	//	4, 5, 6, 6, 7, 4
-	//};
-
-	// Create a model from that set of Vertices and indices.
-	//auto model = std::make_unique<zae::Model>(vertices, indices);
-	//
-	//auto modelScene = AddSubrender<ModelSubrender>({ 0, 0 });
-	//
-	//modelScene->Init(std::move(model));
-
-	/*const std::vector<TestModelVertex> uiVertices = {
-		{ { -1.0f, +0.0f, +0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } },
-		{ { +0.0f, +0.0f, +0.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } },
-		{ { +0.0f, +1.0f, +0.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } },
-		{ { -1.0f, +1.0f, +0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } },
-	};
-	const std::vector<uint32_t> uiIndices = { 0, 1, 2, 0, 2, 3 };
-
-	auto uiModel = std::make_unique<zae::Model>(uiVertices, uiIndices);
-
-	auto uiScene = AddSubrender<UiSubrender>({ 0, 0 });
-
-	uiScene->Init(std::move(uiModel));*/
-
 	zae::Resources::Get()->Add(zae::ResourceNode("TEST_TEXTURE", "textures/texture.jpg"), zae::Image2d::Create("textures/texture.jpg"));
+	zae::Resources::Get()->Add(zae::ResourceNode("DEFAULT", "textures/default.png"), zae::Image2d::Create("textures/default.png"));
+	zae::Resources::Get()->Add(zae::ResourceNode("TEST_MESH", "models/satelliteDish_detailed.obj"), zae::Mesh::Create("models/satelliteDish_detailed.obj"));
 
 	auto subrender = AddSubrender<zae::GraphicSubrender>({ 0,0 });
 	subrender->Init();
+	AddSubrender<zae::MeshSubrender>({ 0,0 });
 }
 
 void GameRenderer::Update()

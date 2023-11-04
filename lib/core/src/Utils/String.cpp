@@ -40,6 +40,30 @@ namespace zae
 		}
 		return tokens;
 	}
+	std::vector<std::string> String::Split(const std::string& str, const std::string& sep)
+	{
+		std::vector<std::string> result;
+		std::stringstream stringStream(str);
+		std::string line;
+		while (std::getline(stringStream, line))
+		{
+			std::size_t prev = 0, pos;
+			while ((pos = line.find_first_of(sep, prev)) != std::string::npos)
+			{
+				if (pos > prev)
+				{
+					result.push_back(line.substr(prev, pos - prev));
+				}
+				prev = pos + 1;
+			}
+			if (prev < line.length())
+			{
+				result.push_back(line.substr(prev, std::string::npos));
+			}
+		}
+
+		return result;
+	}
 
 	bool String::StartsWith(std::string_view str, std::string_view token)
 	{
