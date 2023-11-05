@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <zae/Engine/Resources/Resource.hpp>
 #include <zae/Core/Math/Colour.hpp>
+#include <zae/Engine/Graphics/Images/Image2d.hpp>
 
 namespace zae
 {
@@ -17,8 +18,8 @@ namespace zae
 
 		std::type_index GetTypeIndex() const override { return typeid(Material); }
 
-		const std::string& GetDiffuseMap() { return diffuseMapName; }
-		void SetDiffuseMap(const std::string& diffuseMapName) { this->diffuseMapName = diffuseMapName; }
+		const std::shared_ptr<Image2d>& GetDiffuseMap() { return diffuseMap; }
+		void SetDiffuseMap(const std::shared_ptr<Image2d>& diffuseMap) { this->diffuseMap = diffuseMap; }
 
 		const Colour& GetDiffuseColour() { return diffuseColour; }
 		void SetDiffuseColour(const Colour& diffuseColour) { this->diffuseColour = diffuseColour; }
@@ -26,7 +27,7 @@ namespace zae
 	private:
 		void Load();
 
-		std::string diffuseMapName;
+		std::shared_ptr<Image2d> diffuseMap;
 		Colour diffuseColour;
 
 		std::filesystem::path filename;

@@ -31,6 +31,11 @@ namespace zae
 	void MeshSubrender::Render(const CommandBuffer& commandBuffer)
 	{
 		float delta = Engine::Get()->GetDeltaRender().AsSeconds<float>();
+		elapsed += delta * 60.0f;
+		if (elapsed >= 360.0f)
+		{
+			elapsed -= 360.0f;
+		}
 		auto scene = Scenes::Get()->GetScene();
 
 		if (scene == nullptr || !scene->IsActive())
@@ -63,25 +68,22 @@ namespace zae
 			auto transform = e->GetComponent<Transform>();
 			if (transform == nullptr) { continue; }
 
-			// TODO: PERF
-			const auto& mesh = Resources::Get()->Find<Mesh>(ResourceNode(meshComponent->GetMesh()));
+			auto mesh = meshComponent->GetMesh();
 
-			pushHandler.Push("model", transform->GetWorldMatrix());
+			pushHandler.Push("model", transform->GetWorldMatrix().Rotate(Math::Radians(elapsed), {0.0f, 1.0f, 0.0f}));
 
 			for (const auto& model : mesh->GetModels())
 			{
-				// TODO: PERF
-				auto material = Resources::Get()->Find<Material>(ResourceNode(model->GetMaterial()));
+				auto material = model->GetMaterial();
 
 				if (!material)
 				{
 					continue; // TODO: Use default
 				}
 
-				// TODO: PERF
-				auto diffuseMap = Resources::Get()->Find<Image2d>(ResourceNode(material->GetDiffuseMap()));
+				auto diffuseMap = material->GetDiffuseMap();
 
-				if (!diffuseMap)
+				if (!diffuseMap) // TODO: Async loading, need flag on Resource base class that states loading state
 				{
 					continue; // TODO: Use default
 				}

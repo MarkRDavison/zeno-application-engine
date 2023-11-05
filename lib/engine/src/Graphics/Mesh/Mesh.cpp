@@ -154,17 +154,8 @@ namespace zae
 
 	void CreateMaterial(const MaterialResourceData& materialResourceData)
 	{
-		auto mat = Resources::Get()->Find<Material>(ResourceNode(materialResourceData.name));
-
-		if (mat)
-		{
-			Log::Warning("Material: ", materialResourceData.name, " already exsists.", '\n');
-
-			return; 
-		}
-
-		mat = Material::Create("", false);
-		mat->SetDiffuseMap("DEFAULT");
+		auto mat = std::make_shared<Material>("", false);
+		mat->SetDiffuseMap(Resources::Get()->Find<Image2d>(ResourceNode("DEFAULT")));
 		mat->SetDiffuseColour(materialResourceData.diffuseColour);
 
 		Resources::Get()->Add(ResourceNode(materialResourceData.name), mat);
@@ -526,7 +517,7 @@ namespace zae
 		for (const auto& geom : geometries)
 		{
 			auto& model = models.emplace_back(std::make_shared<Model>(geom.vertices3d, geom.indices));
-			model->SetMaterial(geom.materialName);
+			model->SetMaterial(Resources::Get()->Find<Material>(ResourceNode(geom.materialName)));
 		}
 
 #ifdef ZAE_DEBUG

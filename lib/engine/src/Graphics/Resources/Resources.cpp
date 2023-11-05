@@ -8,6 +8,10 @@ namespace zae
 		elapsedPurge(5s)
 	{
 	}
+	Resources::~Resources()
+	{
+
+	}
 
 	void Resources::Update()
 	{
@@ -20,6 +24,7 @@ namespace zae
 					if ((*it1).second.use_count() <= 1)
 					{
 						it1 = it->second.erase(it1);
+						Log::Info("Erasing resource\n");
 						continue;
 					}
 

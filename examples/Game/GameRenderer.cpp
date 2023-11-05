@@ -34,8 +34,7 @@ void GameRenderer::Start()
 {
 	zae::Resources::Get()->Add(zae::ResourceNode("TEST_TEXTURE", "textures/texture.jpg"), zae::Image2d::Create("textures/texture.jpg"));
 	zae::Resources::Get()->Add(zae::ResourceNode("DEFAULT", "textures/default.png"), zae::Image2d::Create("textures/default.png"));
-	zae::Resources::Get()->Add(zae::ResourceNode("TEST_MESH", "models/satelliteDish_detailed.obj"), zae::Mesh::Create("models/satelliteDish_detailed.obj"));
-
+	
 	auto subrender = AddSubrender<zae::GraphicSubrender>({ 0,0 });
 	subrender->Init();
 	AddSubrender<zae::MeshSubrender>({ 0,0 });
