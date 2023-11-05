@@ -55,6 +55,22 @@ namespace zae
 			return nullptr;
 		}
 
+		template<typename T>
+		std::shared_ptr<T> GetOrAdd(const ResourceNode& node, bool load = true)
+		{
+			auto found = Find<T>(node);
+			if (found)
+			{
+				return found;
+			}
+
+			auto resource = T::Create(node.filename, load);
+
+			Add(node, resource);
+
+			return resource;
+		}
+
 		void Add(const ResourceNode& node, const std::shared_ptr<Resource>& resource);
 		void Remove(const std::shared_ptr<Resource>& resource);
 

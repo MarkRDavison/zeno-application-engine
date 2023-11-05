@@ -7,6 +7,7 @@
 #include <zae/Core/Math/Vector3.hpp>
 #include <zae/Engine/Resources/Resource.hpp>
 #include <zae/Engine/Graphics/Buffers/Buffer.hpp>
+#include <zae/Engine/Graphics/Material/Material.hpp>
 
 namespace zae
 {
@@ -57,8 +58,8 @@ namespace zae
 		uint32_t GetIndexCount() const { return indexCount; }
 		static VkIndexType GetIndexType() { return VK_INDEX_TYPE_UINT32; }
 
-		void SetMaterial(const std::string& material) { this->material = material; }
-		const std::string& GetMaterial() const { return this->material; }
+		void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
+		const std::shared_ptr<Material>& GetMaterial() const { return this->material; }
 
 	protected:
 		template<typename T>
@@ -74,7 +75,7 @@ namespace zae
 		Vector3f maxExtents;
 		float radius = 0.0f;
 
-		std::string material;
+		std::shared_ptr<Material> material;
 	};
 
 	template<typename T>

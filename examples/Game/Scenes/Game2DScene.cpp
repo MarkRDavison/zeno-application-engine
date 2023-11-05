@@ -23,7 +23,7 @@ void Game2DScene::Start()
 		auto e = entities.CreateEntity();
 		e->SetName("TEST2");
 		auto t = e->AddComponent<zae::Transform>();
-		t->SetLocalPosition(zae::Vector3f(1.0f, 0.0f, 0.0f));
+		t->SetLocalPosition(zae::Vector3f(1.0f, -1.0f, 0.0f));
 		auto g = e->AddComponent<zae::Graphic>();
 		g->SetTexture("TEST_TEXTURE");
 		g->SetSize({ 128.0f, 128.0f });

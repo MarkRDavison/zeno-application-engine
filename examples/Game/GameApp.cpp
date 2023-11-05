@@ -69,6 +69,14 @@ void GameApp::Start()
 		};
 		iam->RegisterInputActionType(action);
 	}
+	{
+		auto action = zae::InputActionType{
+			.name = "TOGGLE_MESH",
+			.key = zae::Key::M,
+			.actionType = zae::ActionType::KEY
+		};
+		iam->RegisterInputActionType(action);
+	}
 
 	scene2d = true;
 	zae::Scenes::Get()->SetScene(new Game2DScene(new zae::Camera3DOrthographic()));
