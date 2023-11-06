@@ -67,16 +67,4 @@ void TowerDefenseApp::Start()
 
 void TowerDefenseApp::Update()
 {
-	auto iam = zae::InputActionManager::Get();
-
-	if (iam->IsActionInvoked("SPACE"))
-	{
-		zae::Log::Info(std::quoted("SPACE"), " invoked.\n");
-	}
-	if (iam->IsActionInvoked("CLICK"))
-	{
-		zae::Log::Info(std::quoted("CLICK"), " invoked.\n");
-	}
-
-	iam->UpdateInputCache();
 }

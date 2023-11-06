@@ -17,6 +17,15 @@ namespace zae
 
 		Vector2f position;
 		Vector2f size;
+
+		bool contains(const Vector2f& point) const
+		{
+			return
+				position.x <= point.x &&
+				position.y <= point.y &&
+				point.x <= (position.x + size.x) &&
+				point.y <= (position.y + size.y);
+		}
 	};
 
 }
