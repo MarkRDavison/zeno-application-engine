@@ -18,17 +18,8 @@ namespace zae
 	class Model : public Resource
 	{
 	public:
-		/**
-		 * Creates a new empty model.
-		 */
 		Model() = default;
 
-		/**
-		 * Creates a new model.
-		 * @tparam T The vertex type.
-		 * @param vertices The model vertices.
-		 * @param indices The model indices.
-		 */
 		template<typename T>
 		explicit Model(const std::vector<T>& vertices, const std::vector<uint32_t>& indices = {});
 
