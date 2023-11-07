@@ -1,13 +1,15 @@
 #include "TitleScene.hpp"
 #include "../Systems/TitleUiSystem.hpp"
+#include "../Components/UiTextComponent.hpp"
 
 #include <zae/Engine/Scene/Entity/Components/Transform.hpp>
 #include <zae/Engine/Scene/Entity/Components/MeshComponent.hpp>
 #include <zae/Engine/Scene/Entity/Components/TextComponent.hpp>
 #include <zae/Game/InputActionManager.hpp>
-#include "../Components/UiTextComponent.hpp"
+#include <zae/Engine/Scene/Scenes.hpp>
+#include "SceneTransitions.hpp"
 
-TitleScene::TitleScene(zae::Camera* camera) : zae::Scene(camera)
+TitleScene::TitleScene() : zae::Scene(&camera)
 {
 
 }
@@ -38,7 +40,6 @@ void SetTextInfo(
 void TitleScene::Start()
 {
 	// GetOrAdd is bad for font, its T::Create(path, load) method has extra parameters
-
 
 	zae::Resources::Get()->Add(
 		zae::ResourceNode(
@@ -73,11 +74,11 @@ void TitleScene::Start()
 		{
 			if (str == "START")
 			{
-				zae::Log::Warning("Starting game.", '\n');
+				SceneTransitions::SetGameScene();
 			}
 			else if (str == "OPTIONS")
 			{
-				zae::Log::Warning("Transitioning to options.", '\n');
+				SceneTransitions::SetOptionsScene();
 			}
 			else if (str == "QUIT")
 			{

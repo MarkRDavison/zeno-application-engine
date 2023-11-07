@@ -25,7 +25,7 @@ namespace zae
 					if (useCount <= 1)
 					{
 						it1 = it->second.erase(it1);
-						Log::Info("Erasing resource\n");
+						Log::Info("Erasing resource: ", it->first.name(), "\n");
 						continue;
 					}
 

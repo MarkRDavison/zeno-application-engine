@@ -8,6 +8,7 @@
 #include <zae/Engine/Graphics/Mesh/Mesh.hpp>
 #include <zae/Engine/Resources/Resources.hpp>
 
+// TODO: Rename this to setup/menu scenes renderer?
 TitleSceneRenderer::TitleSceneRenderer()
 {
 	{

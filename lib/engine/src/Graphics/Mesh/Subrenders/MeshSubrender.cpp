@@ -36,7 +36,7 @@ namespace zae
 		{
 			elapsed -= 360.0f;
 		}
-		auto scene = Scenes::Get()->GetScene();
+		const auto& scene = Scenes::Get()->GetScene();
 
 		if (scene == nullptr || !scene->IsActive())
 		{

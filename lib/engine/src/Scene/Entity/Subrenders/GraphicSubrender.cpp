@@ -31,7 +31,7 @@ namespace zae
 
 	void GraphicSubrender::Render(const CommandBuffer& commandBuffer)
 	{
-		auto scene = Scenes::Get()->GetScene();
+		const auto& scene = Scenes::Get()->GetScene();
 
 		if (scene == nullptr || !scene->IsActive())
 		{
@@ -88,7 +88,7 @@ namespace zae
 		model = std::make_unique<Model>(vertices, indices);
 
 		
-		if (auto scene = Scenes::Get()->GetScene(); scene != nullptr)
+		if (const auto& scene = Scenes::Get()->GetScene(); scene != nullptr)
 		{
 			const auto& camera = scene->GetCamera();
 			ubo.view = camera->GetViewMatrix();

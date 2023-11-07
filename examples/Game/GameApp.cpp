@@ -18,6 +18,7 @@ GameApp::GameApp() : zae::App("Zeno Application Engine - Game Example")
 }
 GameApp::~GameApp()
 {
+	zae::Scenes::Get()->SetScene(nullptr);
 	zae::Files::Get()->ClearSearchPath();
 }
 
@@ -79,7 +80,7 @@ void GameApp::Start()
 	}
 
 	scene2d = true;
-	zae::Scenes::Get()->SetScene(new Game2DScene(new zae::Camera3DOrthographic()));
+	zae::Scenes::Get()->SetScene(std::make_unique<Game2DScene>(new zae::Camera3DOrthographic()));
 }
 
 void GameApp::Update()
@@ -99,19 +100,17 @@ void GameApp::Update()
 		scene2d = !scene2d;
 		if (scene2d)
 		{
-			auto scene = zae::Scenes::Get()->GetScene();
+			const auto& scene = zae::Scenes::Get()->GetScene();
 			delete scene->GetCamera();
-			delete scene;
-			zae::Scenes::Get()->SetScene(new Game2DScene(new zae::Camera3DOrthographic()));
+			zae::Scenes::Get()->SetScene(std::make_unique<Game2DScene>(new zae::Camera3DOrthographic()));
 		}
 		else
 		{
-			auto scene = zae::Scenes::Get()->GetScene();
+			const auto& scene = zae::Scenes::Get()->GetScene();
 			delete scene->GetCamera();
-			delete scene;
 			auto camera = new zae::Camera3DPerspective();
 			camera->SetPosition({ 0.0f, 0.5f, 2.5f });
-			zae::Scenes::Get()->SetScene(new Game3DScene(camera));
+			zae::Scenes::Get()->SetScene(std::make_unique<Game3DScene>(camera));
 		}
 	}
 

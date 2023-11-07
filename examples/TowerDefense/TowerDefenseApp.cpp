@@ -11,6 +11,7 @@
 #include <zae/Game/InputActionManager.hpp>
 #include <zae/Game/Camera3DOrthographic.hpp>
 #include <zae/Game/Camera3DPerspective.hpp>
+#include "Scenes/SceneTransitions.hpp"
 
 TowerDefenseApp::TowerDefenseApp() : zae::App("Zeno Application Engine - TowerDefense Example")
 {
@@ -18,6 +19,7 @@ TowerDefenseApp::TowerDefenseApp() : zae::App("Zeno Application Engine - TowerDe
 }
 TowerDefenseApp::~TowerDefenseApp()
 {
+	zae::Scenes::Get()->SetScene(nullptr);
 	zae::Files::Get()->ClearSearchPath();
 }
 
@@ -42,8 +44,6 @@ void TowerDefenseApp::Start()
 	zae::Windows::Get()->GetWindow(0)->OnClose().registerCallback([]() { zae::Engine::Get()->RequestClose(); });
 	zae::Windows::Get()->GetWindow(0)->SetTitle(zae::App::GetName());
 
-	zae::Graphics::Get()->SetRenderer(std::make_unique<TitleSceneRenderer>());
-
 	auto iam = zae::InputActionManager::Get();
 	{
 		auto action = zae::InputActionType{
@@ -62,7 +62,7 @@ void TowerDefenseApp::Start()
 		iam->RegisterInputActionType(action);
 	}
 
-	zae::Scenes::Get()->SetScene(new TitleScene(new zae::Camera3DOrthographic()));
+	SceneTransitions::SetTitleScene();
 }
 
 void TowerDefenseApp::Update()

@@ -32,7 +32,7 @@ namespace zae
 
 	void TextSceneSubrender::Render(const zae::CommandBuffer& commandBuffer)
 	{
-		auto scene = Scenes::Get()->GetScene();
+		const auto& scene = Scenes::Get()->GetScene();
 
 		if (scene == nullptr || !scene->IsActive())
 		{
