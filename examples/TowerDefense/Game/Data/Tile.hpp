@@ -7,5 +7,6 @@ struct Tile
 
 	zae::Vector2i position;
 	std::string mesh;
+	float rotation{ 0.0f };
 
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Game/Data/Level.hpp"
 #include <zae/Engine/Scene/Scene.hpp>
 #include <zae/Engine/Resources/Resources.hpp>
 #include <zae/Game/Camera3DPerspective.hpp>
@@ -16,5 +17,6 @@ protected:
 
 private:
 	zae::Camera3DPerspective camera;
-
+	float rotation = 0.0f;
+	std::shared_ptr<Level> level;
 };

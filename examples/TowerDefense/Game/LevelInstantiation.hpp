@@ -1,9 +1,10 @@
 #pragma once
 #include <zae/Engine/Scene/Entity/EntityHolder.hpp>
+#include "../Game/Data/Level.hpp"
 
 class LevelInstantiation
 {
 	LevelInstantiation() = default;
 public:
-	static void CreateExampleLevel(zae::EntityHolder& entities);
+	static std::shared_ptr<Level> CreateExampleLevel(zae::EntityHolder& entities);
 };

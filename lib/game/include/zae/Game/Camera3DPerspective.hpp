@@ -26,11 +26,13 @@ namespace zae
 		void SetFieldOfView(float fieldOfView) { this->fieldOfView = fieldOfView; }
 
 		void SetPosition(const Vector3f& position) { this->position = position; }
+		void SetRotation(const Vector3f& rotation) { this->rotation = rotation; }
 
 		void Update(float delta) override;
 
 	protected:
 		Vector3f position;
+		Vector3f rotation;
 
 		float nearPlane, farPlane;
 		float fieldOfView;
