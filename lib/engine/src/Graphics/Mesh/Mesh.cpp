@@ -155,7 +155,7 @@ namespace zae
 	void CreateMaterial(const MaterialResourceData& materialResourceData)
 	{
 		auto mat = std::make_shared<Material>("", false);
-		mat->SetDiffuseMap(Resources::Get()->Find<Image2d>(ResourceNode("DEFAULT")));
+		mat->SetDiffuseMap(Resources::Get()->Find<Image2d>(ResourceNode("DEFAULT"))); // TODO: get diffuse map from material
 		mat->SetDiffuseColour(materialResourceData.diffuseColour);
 
 		Resources::Get()->Add(ResourceNode(materialResourceData.name), mat);

@@ -34,8 +34,6 @@ namespace zae
 
 		UniformHandler uniformScene;
 		PushHandler pushHandler;
-
-		float elapsed{ 0.0f };
 	};
 
 }

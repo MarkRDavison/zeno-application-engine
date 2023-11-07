@@ -30,12 +30,6 @@ namespace zae
 
 	void MeshSubrender::Render(const CommandBuffer& commandBuffer)
 	{
-		float delta = Engine::Get()->GetDeltaRender().AsSeconds<float>();
-		elapsed += delta * 60.0f;
-		if (elapsed >= 360.0f)
-		{
-			elapsed -= 360.0f;
-		}
 		const auto& scene = Scenes::Get()->GetScene();
 
 		if (scene == nullptr || !scene->IsActive())
@@ -70,7 +64,7 @@ namespace zae
 
 			auto mesh = meshComponent->GetMesh();
 
-			pushHandler.Push("model", transform->GetWorldMatrix().Rotate(Math::Radians(elapsed), {0.0f, 1.0f, 0.0f}));
+			pushHandler.Push("model", transform->GetWorldMatrix());
 
 			for (const auto& model : mesh->GetModels())
 			{
