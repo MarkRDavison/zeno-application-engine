@@ -8,10 +8,10 @@
 class TitleUiSystem : public zae::System
 {
 public:
+	TitleUiSystem(zae::EntityHolder* entities);
 	~TitleUiSystem();
-	void Update(std::vector<zae::Entity*> entities);
-	
-	void Update() override {}
+
+	void Update(std::vector<zae::Entity*> entities) override;
 
 	zae::Signal<std::string> onTitleItemClicked;
 };

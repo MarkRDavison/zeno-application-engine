@@ -64,6 +64,14 @@ namespace zae {
 	}
 
 	template<typename T>
+	constexpr T Vector2<T>::Angle() const
+	{
+		auto normal = this->Normalize();
+
+		return static_cast<T>(std::atan2(normal.y, normal.x));
+	}
+
+	template<typename T>
 	template<typename K>
 	constexpr auto Vector2<T>::Angle(const Vector2<K> &other) const {
 		auto dls = Dot(other) / (Length() * other.Length());

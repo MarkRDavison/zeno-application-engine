@@ -68,7 +68,7 @@ void TitleScene::Start()
 		SetTextInfo(e, "TITLE_FONT", "Quit", 36, { 8.0f, 32.0f + 72.0f * 3.0f, 0.0f }, true);
 	}
 
-	systems.Add<TitleUiSystem>(std::make_unique<TitleUiSystem>());
+	systems.Add<TitleUiSystem>(std::make_unique<TitleUiSystem>(&entities));
 	auto titleUiSystem = systems.Get<TitleUiSystem>();
 	titleUiSystem->onTitleItemClicked.registerCallback([&](std::string str) -> void
 		{
@@ -95,9 +95,8 @@ void TitleScene::Update(float delta)
 {
 	auto iam = zae::InputActionManager::Get();
 
-	auto titleUiSystem = systems.Get<TitleUiSystem>();
-
-	titleUiSystem->Update(QueryAll());
+	// Why????
+	((zae::System*)systems.Get<TitleUiSystem>())->Update();
 
 	iam->UpdateInputCache();
 }

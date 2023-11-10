@@ -78,6 +78,22 @@ namespace zae
 		return entities;
 	}
 
+	std::vector<Entity*> EntityHolder::QueryByTag(const std::string& tag)
+	{
+		std::vector<Entity*> entities;
+
+		for (const auto& object : objects)
+		{
+			if (object->IsRemoved() || (!tag.empty() && !object->HasTag(tag)))
+			{
+				continue;
+			}
+
+			entities.emplace_back(object.get());
+		}
+
+		return entities;
+	}
 	bool EntityHolder::Contains(Entity* object)
 	{
 		for (const auto& object2 : objects)

@@ -3,16 +3,20 @@
 #include <vector>
 #include <zae/Engine/Scene/Entity/System.hpp>
 #include <zae/Engine/Scene/Entity/Entity.hpp>
+#include <zae/Engine/Scene/Entity/Components/Transform.hpp>
+#include "../Components/PathFollowerComponent.hpp"
+#include "../Components/CreepComponent.hpp"
 #include "../Data/Level.hpp"
 
-class PathFollowSystem : public zae::System
+class PathFollowSystem : public zae::ComponentSystem<CreepComponent, PathFollowerComponent, zae::Transform>
 {
 public:
-	PathFollowSystem(std::shared_ptr<Level> level);
+	PathFollowSystem(
+		zae::EntityHolder *entities,
+		std::shared_ptr<Level> level);
 	~PathFollowSystem() override = default;
 
 	void Update(std::vector<zae::Entity*> entities);
-	void Update() override;
 
 private:
 	std::shared_ptr<Level> level;

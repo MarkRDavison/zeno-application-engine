@@ -24,8 +24,8 @@ namespace zae
 					const auto useCount = (*it1).second.use_count();
 					if (useCount <= 1)
 					{
+						Log::Info("Erasing resource: ", (*it1).first.name, " from (", (*it1).first.filename, ")", "\n");
 						it1 = it->second.erase(it1);
-						Log::Info("Erasing resource: ", it->first.name(), "\n");
 						continue;
 					}
 

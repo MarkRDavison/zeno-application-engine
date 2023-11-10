@@ -7,5 +7,10 @@
  - For small font sizes use a regular bitmap font instead of sdf???
  - Push constants vs uniform buffers
 	- Dynamic uniform buffers?
+ - Debug subrender???
+	- Draw a line
+	- Draw a bounding box
+	- Draw the 3d axis thing
+	- Draw text that vanishes etc???
 
 # DONE

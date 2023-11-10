@@ -58,6 +58,8 @@ namespace zae
 			return components;
 		}
 
+		std::vector<Entity*> QueryByTag(const std::string& tag);
+
 		bool Contains(Entity* object);
 
 	private:

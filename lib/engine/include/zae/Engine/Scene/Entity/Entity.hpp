@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <unordered_set>
 
 namespace zae
 {
@@ -18,6 +19,10 @@ namespace zae
 
 		const std::string& GetName() const { return name; }
 		void SetName(const std::string& name) { this->name = name; }
+
+		void AddTag(const std::string& tag);
+		void ClearTag(const std::string& tag);
+		bool HasTag(const std::string& tag) const;
 
 		bool IsRemoved() const { return removed; }
 		void SetRemoved(bool removed) { this->removed = removed; }
@@ -118,6 +123,7 @@ namespace zae
 		std::string name;
 		bool removed = false;
 		std::vector<std::unique_ptr<Component>> components;
+		std::unordered_set<std::size_t> tags;
 	};
 
 }

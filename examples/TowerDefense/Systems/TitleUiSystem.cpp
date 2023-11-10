@@ -7,6 +7,7 @@
 #include "../Components/UiTextComponent.hpp"
 
 
+TitleUiSystem::TitleUiSystem(zae::EntityHolder* entities) : zae::System(entities) {}
 TitleUiSystem::~TitleUiSystem()
 {
 	onTitleItemClicked.clearCallbacks();
