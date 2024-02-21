@@ -23,6 +23,7 @@ namespace zae
 		static wchar_t ConvertUtf16(char c);
 
 		static std::vector<std::string> Split(const std::string& str, char sep);
+		static std::vector<std::string> Split(const std::string& str, const std::string& sep);
 
 		static bool StartsWith(std::string_view str, std::string_view token);
 

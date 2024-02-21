@@ -21,13 +21,15 @@ namespace zae
 			return Instance;
 		}
 
-		void SetScene(Scene* scene);
-		Scene* GetScene();
+
+		void SetScene(std::unique_ptr<Scene> scene);
+		const std::unique_ptr<Scene>& GetScene();
 		void Update(float delta);
 
 	private:
 		static Scenes* Instance;
-		Scene* scene{ nullptr };
+		std::unique_ptr<Scene> scene{ nullptr };
+		std::unique_ptr<Scene> nextScene{ nullptr };
 	};
 
 }

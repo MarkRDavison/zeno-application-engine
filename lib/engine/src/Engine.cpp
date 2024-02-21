@@ -6,7 +6,6 @@
 #include <zae/Engine/Files.hpp>
 #include <zae/Engine/Timers.hpp>
 #include <zae/Engine/Scene/Scenes.hpp>
-#include <zae/Engine/Uis/Uis.hpp>
 
 #include <exception>
 
@@ -81,8 +80,6 @@ namespace zae
 				Resources::Get()->Update();
 
 				Timers::Get()->Update();
-
-				Uis::Get()->Update(deltaUpdate.change.AsSeconds());
 
 				// Updates the engines delta.
 				deltaUpdate.Update();

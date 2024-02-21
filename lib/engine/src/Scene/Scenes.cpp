@@ -5,12 +5,12 @@ namespace zae
 
 	Scenes* Scenes::Instance = nullptr;
 
-	void Scenes::SetScene(Scene* scene)
+	void Scenes::SetScene(std::unique_ptr<Scene> scene)
 	{
-		this->scene = scene;
+		this->nextScene = std::move(scene);
 	}
 
-	Scene* Scenes::GetScene()
+	const std::unique_ptr<Scene>& Scenes::GetScene()
 	{
 		return scene;
 	}
@@ -20,6 +20,12 @@ namespace zae
 		if (scene != nullptr)
 		{
 			scene->UpdateScene(delta);
+		}
+
+		if (nextScene != nullptr)
+		{
+			scene = std::move(nextScene);
+			nextScene = nullptr;
 		}
 	}
 }

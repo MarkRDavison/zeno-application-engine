@@ -10,4 +10,7 @@ public:
 
 	void Start() override;
 	void Update() override;
+
+private:
+	bool scene2d{ true };
 };

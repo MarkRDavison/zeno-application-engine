@@ -8,6 +8,10 @@ namespace zae
 		elapsedPurge(5s)
 	{
 	}
+	Resources::~Resources()
+	{
+
+	}
 
 	void Resources::Update()
 	{
@@ -17,8 +21,10 @@ namespace zae
 			{
 				for (auto it1 = it->second.begin(); it1 != it->second.end();)
 				{
-					if ((*it1).second.use_count() <= 1)
+					const auto useCount = (*it1).second.use_count();
+					if (useCount <= 1)
 					{
+						Log::Info("Erasing resource: ", (*it1).first.name, " from (", (*it1).first.filename, ")", "\n");
 						it1 = it->second.erase(it1);
 						continue;
 					}

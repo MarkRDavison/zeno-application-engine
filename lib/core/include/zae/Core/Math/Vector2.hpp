@@ -37,6 +37,8 @@ public:
 	template<typename K>
 	constexpr auto Divide(const Vector2<K> &other) const;
 
+	constexpr T Angle() const;
+
 	template<typename K>
 	constexpr auto Angle(const Vector2<K> &other) const;
 
